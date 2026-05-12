@@ -15,17 +15,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.Calendar;
@@ -37,6 +33,22 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import static com.haruhi.lex.crackcamera.Notification.sendNotification;
 
+/**
+ * Primary screen: camera deny toggle, navigation drawer, NFC / uninstall / beacon dialogs, and
+ * hidden install-date flow.
+ * <p>
+ * Supporting types (same package, behavior unchanged):
+ * <ul>
+ * <li>{@link DrawerMenuRows}, {@link DrawerMenuAdapter}, {@link DrawerListRow} — drawer list
+ * content and adapter</li>
+ * <li>{@link AlertDialogWindows} — shared {@link android.app.AlertDialog} window sizing and
+ * gravity</li>
+ * <li>{@link MainStyledDialogs} — uninstall sheet and yellow→red camera confirmation sheet</li>
+ * <li>{@link BeaconRecognitionDialog} — red-state beacon sheet; timings {@link BeaconRecognitionDialog#PHASE1_MS},
+ * {@link BeaconRecognitionDialog#AUTO_TOGGLE_MS}</li>
+ * <li>{@link MainCameraUi} — toolbar / header visuals driven by {@link #onSwitchCamera(View)}</li>
+ * </ul>
+ */
 public class MainActivity extends AppCompatActivity {
 
     /**
@@ -183,6 +195,8 @@ public class MainActivity extends AppCompatActivity {
      * {@code mndmdm_common_popup_nfc_off_title/desc}.
      * OEM-specific “mode” is not exposed in the public API;
      * {@link NfcAdapter#isEnabled()} matches the off-NFC case.
+     *
+     * @see AlertDialogWindows#styleBottomSheet(android.view.Window)
      */
     private void maybeShowNfcOffBottomDialog() {
         NfcAdapter nfc = NfcAdapter.getDefaultAdapter(this);
@@ -374,10 +388,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Resolve views optional for legacy ids not present in the copied fragment
-     * layout.
+     * Resolve views optional for legacy ids not present in the copied fragment layout.
+     * Package-visible for {@link MainCameraUi}.
      */
-    private <T extends View> T optionalViewById(String name, Class<T> clazz) {
+    <T extends View> T optionalViewById(String name, Class<T> clazz) {
         int id = getResources().getIdentifier(name, "id", getPackageName());
         if (id == 0) {
             return null;
@@ -466,10 +480,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Bottom-sheet uninstall confirmation; delegates to {@link MainStyledDialogs#showUninstallConfirm(MainActivity)}.
+     */
     private void showUninstallConfirmDialog() {
         MainStyledDialogs.showUninstallConfirm(this);
     }
 
+    /**
+     * Launches the system uninstall UI for this package. Package-visible for {@link MainStyledDialogs}.
+     */
     void startSystemUninstallForThisApp() {
         Uri uri = Uri.parse("package:" + getPackageName());
         Intent intent = new Intent(Intent.ACTION_DELETE, uri);
@@ -580,118 +600,20 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * Applies camera blocked vs allowed UI and optionally flips {@link #suspended} when
+     * {@link #init_screen} is true (user-driven toggle). Startup uses {@code init_screen == false}
+     * so the first call only syncs visuals from prefs.
+     * <p>
+     * Order matters: {@link MainCameraUi#applyToggleVisuals(MainActivity)} paints from the
+     * <em>current</em> {@code suspended} flag; {@code drawerMenuYellow} snapshots that flag for
+     * {@link #refreshDrawerMenuMode(boolean)} before {@code suspended} may be toggled inside the
+     * {@code init_screen} block.
+     *
+     * @param view optional trigger (e.g. deny button); may be {@code null} on synthetic calls
+     */
     public void onSwitchCamera(View view) {
-        Button toggleButton = findViewById(R.id.btnCameraDeny);
-        RelativeLayout rl1 = findViewById(R.id.rlTitle);
-        RelativeLayout rl2 = findViewById(R.id.rlSubTitle);
-        LinearLayout ll1 = findViewById(R.id.llCheckInTime);
-        LinearLayout ll2 = findViewById(R.id.llDelayTime);
-
-        ImageView sticker = findViewById(R.id.ivCameraSticker);
-        ProgressBar prg = findViewById(R.id.pdProgress);
-        ImageButton topRightToolbar = findViewById(R.id.btnDeleteApp);
-
-        Button btl = optionalViewById("bt_menu", Button.class);
-        Button btr = optionalViewById("bt_del", Button.class);
-        float factor = getApplicationContext().getResources().getDisplayMetrics().density;
-
-        // Yellow UI: toolbar icons match originalSource —
-        // drawable-xhdpi/img_common_btn_alert.png is 53×49px
-        // (~26.5×24.5dp); drawer_base.xml uses wrap_content + 5dp pad (was oversized at
-        // 33×33dp square).
-        LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(
-                (int) (26 * factor + 0.5f), (int) (25 * factor + 0.5f));
-        LinearLayout.LayoutParams letParams = new LinearLayout.LayoutParams((int) (48 * factor), (int) (35 * factor));
-        iconParams.gravity = Gravity.CENTER;
-        letParams.gravity = Gravity.CENTER;
-
-        int marginEndPx = (int) (10 * factor + 0.5f);
-
-        if (suspended) {
-            System.out.println("허용상태");
-            // 카메라 허용 -> 차단
-            // System.out.println("화면구성중 "+suspendDate.getTimeInMillis());
-
-            endSets[0] = suspendDate.get(Calendar.YEAR);
-            endSets[1] = suspendDate.get(Calendar.MONDAY);
-            endSets[2] = suspendDate.get(Calendar.DATE);
-            endSets[3] = suspendDate.get(Calendar.HOUR_OF_DAY);
-            endSets[4] = suspendDate.get(Calendar.MINUTE);
-            endSets[5] = suspendDate.get(Calendar.SECOND);
-            if (toggleButton != null) {
-                toggleButton.setText(R.string.mnfake_camera_toggle_beacon);
-                toggleButton.setBackgroundResource(R.drawable.mnfake_btn_pill_grey);
-                toggleButton.setTextColor(0xffffffff);
-            }
-
-            if (btl != null && btr != null) {
-                btr.setLayoutParams(iconParams);
-                btl.setLayoutParams(iconParams);
-                btr.setBackgroundResource(R.drawable.img_common_btn_alert);
-                btl.setBackgroundResource(R.drawable.menu);
-            }
-            if (topRightToolbar != null) {
-                RelativeLayout.LayoutParams trLp = new RelativeLayout.LayoutParams(iconParams.width, iconParams.height);
-                trLp.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE);
-                trLp.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
-                trLp.setMarginEnd(marginEndPx);
-                topRightToolbar.setLayoutParams(trLp);
-                topRightToolbar.setBackgroundResource(R.drawable.img_common_btn_alert);
-                topRightToolbar.setContentDescription(null);
-            }
-
-            if (rl1 != null)
-                rl1.setBackgroundResource(R.drawable.img_bg_user_soldier);
-            if (rl2 != null)
-                rl2.setBackgroundResource(R.drawable.img_bg_user_soldier_sub);
-            if (ll1 != null)
-                ll1.setVisibility(View.VISIBLE);
-            if (sticker != null) {
-                sticker.setVisibility(View.VISIBLE);
-                sticker.setImageResource(R.drawable.img_policy_state_camera_block);
-            }
-            if (ll2 != null)
-                ll2.setVisibility(View.VISIBLE);
-            if (prg != null)
-                prg.setVisibility(View.VISIBLE);
-        } else {
-            System.out.println("허용상태");
-            // 카메라 차단 -> 허용
-            if (toggleButton != null) {
-                toggleButton.setText(R.string.mndmdm_common_camera_deny);
-                toggleButton.setBackgroundResource(R.drawable.style_mndmdm_btn_deny);
-            }
-            if (btl != null && btr != null) {
-                btr.setLayoutParams(letParams);
-                btl.setLayoutParams(letParams);
-                btr.setBackgroundResource(R.drawable.img_common_drawer_delete);
-                btl.setBackgroundResource(R.drawable.img_common_drawer_menu);
-            }
-            if (topRightToolbar != null) {
-                RelativeLayout.LayoutParams trLp = new RelativeLayout.LayoutParams(letParams.width, letParams.height);
-                trLp.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE);
-                trLp.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
-                trLp.setMarginEnd(marginEndPx);
-                topRightToolbar.setLayoutParams(trLp);
-                topRightToolbar.setBackgroundResource(R.drawable.img_common_drawer_delete);
-                topRightToolbar.setContentDescription(getString(R.string.common___delete));
-            }
-
-            if (rl1 != null)
-                rl1.setBackgroundResource(R.drawable.img_bg_user_out);
-            if (rl2 != null)
-                rl2.setBackgroundResource(R.drawable.img_bg_user_out_sub);
-            if (ll1 != null)
-                ll1.setVisibility(View.GONE);
-            if (sticker != null) {
-                sticker.setVisibility(View.VISIBLE);
-                sticker.setImageResource(R.drawable.img_policy_state_camera_allow);
-            }
-            if (ll2 != null)
-                ll2.setVisibility(View.INVISIBLE);
-            if (prg != null)
-                prg.setVisibility(View.INVISIBLE);
-        }
+        MainCameraUi.applyToggleVisuals(this);
         final boolean drawerMenuYellow = suspended;
         if (init_screen) {
             boolean wasYellow = suspended;
