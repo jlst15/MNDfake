@@ -30,7 +30,10 @@ public class Notification extends BroadcastReceiver {
     public void sendPrivate(Context context){
         Intent intent = new Intent(context, Notification.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        int pendingIntentFlags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                ? PendingIntent.FLAG_IMMUTABLE
+                : 0;
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, pendingIntentFlags);
 
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
@@ -62,7 +65,10 @@ public class Notification extends BroadcastReceiver {
     public static void sendNotification(Context context){
         Intent intent = new Intent(context, Notification.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        int pendingIntentFlags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                ? PendingIntent.FLAG_IMMUTABLE
+                : 0;
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, pendingIntentFlags);
 
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
