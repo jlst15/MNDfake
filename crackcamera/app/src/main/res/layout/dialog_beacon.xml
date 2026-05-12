@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mirrors originalSource/res/layout-xhdpi/activity_beacon.xml (beacon recognition dialog). -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+
+    <RelativeLayout
+        android:id="@+id/beacon_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffffff">
+
+        <!-- Matches originalSource activity_beacon.xml: icon uses background drawable at intrinsic size; title only in bar. -->
+        <RelativeLayout
+            android:id="@+id/beacon_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ff2a7ef1"
+            android:gravity="center_vertical"
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/ivBeaconIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/img_common_dialog_icon_gk"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:id="@+id/tvBeaconTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/ivBeaconIcon"
+                android:text="@string/mndmdm_checkout_beacon_secu"
+                android:textColor="#ffffffff"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tvBeaconDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/beacon_header"
+            android:padding="10dp"
+            android:text="@string/mnfake_beacon_dialog_subtitle"
+            android:textColor="#ff333333"
+            android:textSize="18sp" />
+
+        <RelativeLayout
+            android:id="@+id/rlBeaconSetting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvBeaconDescription"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/tvBeaconSetting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="@string/mndmdm_checkout_beacon_setting_desc"
+                android:textColor="@color/common_txt_black"
+                android:textStyle="bold" />
+
+            <!-- Same as activity_beacon.xml: 30dip + animation_progress_popup. -->
+            <ProgressBar
+                android:id="@+id/pbBeaconSetting"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:indeterminate="true"
+                android:indeterminateDrawable="@drawable/animation_progress_popup" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlBeaconScanning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rlBeaconSetting"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/tvBeaconScanning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/pbBeaconScan"
+                android:text="@string/mndmdm_checkout_beacon_scanning_ready_desc"
+                android:textColor="@color/common_mndmdm_text_sub"
+                android:textStyle="bold" />
+
+            <ProgressBar
+                android:id="@+id/pbBeaconScan"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:indeterminate="true"
+                android:indeterminateDrawable="@drawable/animation_progress_popup"
+                android:visibility="invisible" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/beaconDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/rlBeaconScanning"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#ffdddddd" />
+
+        <LinearLayout
+            android:id="@+id/llBeaconButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/beaconDivider"
+            android:background="#ffffffff"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <Button
+                android:id="@+id/btnBeaconCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="#00000000"
+                android:padding="10dp"
+                android:text="@string/common___cancel"
+                android:textColor="#ff2a7ef1"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

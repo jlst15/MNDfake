@@ -1,349 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/common_mndmdm_background"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <RelativeLayout android:orientation="vertical" android:id="@+id/body" android:background="@color/common_mndmdm_background" android:clickable="true" android:layout_width="match_parent" android:layout_height="match_parent">
-        <RelativeLayout android:gravity="center" android:id="@+id/rlTimeLine" android:visibility="visible" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_centerHorizontal="true">
+<FrameLayout android:background="@color/common_mndmdm_background" android:fitsSystemWindows="true" android:layout_width="match_parent" android:layout_height="match_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-            <RelativeLayout
-                android:id="@+id/rlTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/common_mndmdm_background_soldier_yellow">
-
-                <LinearLayout
-                    android:id="@+id/rlCheckInTime"
+    <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent" android:layout_height="match_parent">
+        <RelativeLayout android:id="@+id/rlTimeLine" android:visibility="visible" android:layout_width="match_parent" android:layout_height="wrap_content" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent">
+            <RelativeLayout android:id="@+id/rlTitle" android:background="@color/common_mndmdm_background_unlock_red" android:layout_width="match_parent" android:layout_height="wrap_content">
+                <include
+                    layout="@layout/mnd_top_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:padding="10dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <Button
-                            android:id="@+id/bt_menu"
-                            android:layout_width="30dp"
-                            android:layout_height="24dp"
-                            android:gravity="center"
-                            android:background="@drawable/img_common_drawer_menu"
-
-                             />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="5"
-                            android:gravity="center"
-
-                            android:orientation="horizontal">
-
-                            <EditText
-                                android:id="@+id/editMND"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="8"
-                                android:ems="10"
-                                android:hint="20/01/29/14/45 형식 준수"
-                                android:inputType="text"
-                                android:text=""
-                                android:visibility="gone" />
-
-                            <Button
-                                android:id="@+id/editButton"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="2"
-                                android:onClick="onClickEditDone"
-                                android:text="확인"
-                                android:visibility="gone" />
-
-                            <ImageView
-                                android:id="@+id/mndLogo"
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:onClick="onClickMND"
-                                android:tag="logo"
-                                android:visibility="visible"
-                                app:srcCompat="@drawable/img_common_mnsa_logo" />
-
-
+                    android:layout_alignParentTop="true" />
+                <LinearLayout android:orientation="vertical" android:id="@+id/rlCheckInTime" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_below="@+id/toolbar" android:layout_marginBottom="10.0dip">
+                    <LinearLayout android:gravity="center_horizontal" android:orientation="vertical" android:paddingLeft="5.0dip" android:paddingRight="5.0dip" android:layout_width="match_parent" android:layout_height="wrap_content">
+                        <LinearLayout android:layout_gravity="center_horizontal" android:gravity="center_horizontal" android:orientation="horizontal" android:padding="5.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content">
+                            <TextView android:gravity="bottom" android:id="@+id/tvInstallDateTitle" android:text="설치일시 : " android:layout_width="wrap_content" android:layout_height="wrap_content" style="@style/TopTextInstallDateTitle" />
+                            <TextView android:gravity="bottom" android:id="@+id/tvInstallDate" android:text="19.10.10 12:12" android:layout_width="wrap_content" android:layout_height="wrap_content" style="@style/TopTextInstallDateValue" />
                         </LinearLayout>
-
-                        <Button
-                            android:id="@+id/bt_del"
-                            android:layout_width="30dp"
-                            android:layout_height="24dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/img_common_drawer_delete"
-                            android:onClick="onClickDelButton" />
+                        <LinearLayout android:layout_gravity="center_horizontal" android:gravity="center_horizontal" android:orientation="horizontal" android:id="@+id/llCheckInTime" android:layout_width="wrap_content" android:layout_height="wrap_content">
+                            <TextView android:gravity="bottom" android:id="@+id/tvCheckInTimeTitle" android:text="차단일시 : " android:layout_width="wrap_content" android:layout_height="wrap_content" style="@style/TopTextInstallDateTitle" />
+                            <TextView android:gravity="bottom" android:id="@+id/tvCheckInTim" android:text="19.10.10 12:11" android:layout_width="wrap_content" android:layout_height="wrap_content" style="@style/TopTextInstallDateValue" />
+                        </LinearLayout>
                     </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_margin="5dp">
-
-                        <TextView
-                            android:id="@+id/tvInstallDateTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="설치일시 : "
-                            android:textColor="@color/common_base_color_txt"
-                            android:textSize="26dp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvInstallDate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="20.01.26 17:56"
-                            android:textColor="@color/common_base_color_txt"
-                            android:textSize="24dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/llSuspendTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true">
-
-                        <TextView
-                            android:id="@+id/tvCheckInTimeTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="차단일시 : "
-                            android:textColor="@color/common_base_color_txt"
-                            android:textSize="26dp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvCheckInTim"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="19.10.10 12:11"
-                            android:textColor="@color/common_base_color_txt"
-                            android:textSize="24dp" />
+                    <LinearLayout android:gravity="center_horizontal" android:orientation="vertical" android:id="@+id/llCallService" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginLeft="10.0dip" android:layout_marginTop="5.0dip" android:layout_marginRight="10.0dip" android:paddingBottom="10.0dip">
+                        <TextView android:textSize="20.0dip" android:textStyle="bold" android:textColor="@color/common_base_color_txt" android:gravity="center_horizontal" android:id="@+id/tvCallService" android:layout_width="match_parent" android:layout_height="wrap_content" android:includeFontPadding="false" android:paddingTop="6.0dip" android:text="@string/common_call_center_title" />
+                        <TextView android:textSize="20.0dip" android:textStyle="bold" android:textColor="@color/common_base_color_txt" android:typeface="sans" android:gravity="center_horizontal" android:id="@+id/tvCallServicePhone" android:layout_width="match_parent" android:layout_height="wrap_content" android:includeFontPadding="false" android:paddingTop="2.0dip" android:text="@string/common_call_center_phone" />
+                        <TextView android:textSize="16.0dip" android:textStyle="normal" android:textColor="@color/common_base_color_txt" android:gravity="center_horizontal" android:id="@+id/tvCallServiceInfo" android:layout_width="match_parent" android:layout_height="wrap_content" android:includeFontPadding="false" android:paddingTop="4.0dip" android:text="09~21시(평일)/09~18시(휴일)" />
                     </LinearLayout>
                 </LinearLayout>
             </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rlSubTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rlTitle"
-
-                android:background="@drawable/img_bg_user_soldier_sub" />
         </RelativeLayout>
-        <RelativeLayout android:gravity="center" android:orientation="horizontal" android:id="@+id/rlStateCommant" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_alignParentBottom="true">
-            <RelativeLayout android:orientation="horizontal" android:id="@+id/rlButton" android:paddingBottom="10dp" android:layout_width="match_parent" android:layout_height="wrap_content">
-
-                <Button
-                    android:id="@+id/btnCameraDeny"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/style_mndmdm_btn_deny"
-                    android:gravity="center"
-                    android:text="@string/mndmdm_common_camera_deny"
-                    android:textColor="#ffffff"
-                    android:textSize="16dp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
-
-                <Button
-                    android:id="@+id/btnCameraAllowFull"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/style_mndmdm_btn_allow"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:text="@string/mndmdm_common_camera_allow"
-                    android:textColor="#ffffff"
-                    android:onClick="onSwitchCamera"
-                    android:textSize="16dp"
-                    android:textStyle="bold"
-                    android:visibility="visible" />
-
-            </RelativeLayout>
-            <RelativeLayout android:gravity="center_horizontal" android:background="@color/common_mndmdm_background_border" android:padding="10dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_below="@+id/rlButton">
-                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true">
-
-                    <TextView
-                        android:id="@+id/tvAgentVersionTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="onSwitchMode"
-                        android:text="Version "
-                        android:textColor="@color/common_base_color_txt_gray"
-                        android:textSize="12dp" />
-
-                    <TextView
-                        android:id="@+id/tvAgentVersion"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="v2.00.00"
-                        android:textColor="@color/common_base_color_txt"
-                        android:textSize="12dp" />
-                </LinearLayout>
-            </RelativeLayout>
-        </RelativeLayout>
-        <RelativeLayout android:id="@+id/llTop" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_above="@+id/rlStateCommant" android:layout_below="@+id/rlTimeLine">
+        <FrameLayout android:id="@+id/flSubTitle" android:layout_width="match_parent" android:layout_height="wrap_content" app:layout_constraintBottom_toTopOf="@+id/llTop" app:layout_constraintTop_toBottomOf="@+id/rlTimeLine">
+            <RelativeLayout android:id="@+id/rlSubTitle" android:background="@null" android:layout_width="match_parent" android:layout_height="wrap_content" app:layout_constraintBottom_toTopOf="@+id/llTop" app:layout_constraintTop_toBottomOf="@+id/rlTimeLine" />
+            <ImageView android:id="@+id/ivvhelpcall" android:layout_width="match_parent" android:layout_height="60.0dip" android:layout_marginTop="30.0dip" android:src="@drawable/img_help_call" android:scaleType="fitCenter" />
+        </FrameLayout>
+        <RelativeLayout android:id="@+id/llTop" android:layout_width="match_parent" android:layout_height="0.0dip" android:layout_above="@+id/rlStateCommant" app:layout_constraintBottom_toTopOf="@+id/rlStateCommant" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/flSubTitle">
             <RelativeLayout android:orientation="vertical" android:id="@+id/rlCamera" android:layout_width="match_parent" android:layout_height="match_parent">
-
-                <RelativeLayout android:gravity="center" android:orientation="vertical" android:id="@+id/llPolicyState" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginBottom="10dp" android:layout_centerInParent="true">
-                    <RelativeLayout android:id="@+id/rlPolicy" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_centerInParent="true">
-
-                        <ImageView
-                            android:id="@+id/ivPolicys"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp"
-                            android:background="@drawable/img_policy_second_area"
-                            android:visibility="gone" />
-                        <ImageView android:id="@+id/ivPolicysMain" android:background="@drawable/img_policy_second_area_main" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:layout_marginBottom="5dp" android:layout_alignParentBottom="true" android:layout_centerHorizontal="true"/>
-                        <RelativeLayout android:id="@+id/relative" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_above="@+id/ivPolicys">
-
-                            <ImageView
-                                android:id="@+id/ivCameraSticker"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="15dp"
-                                android:layout_marginLeft="15dp"
-                                android:layout_marginTop="15dp"
-                                android:layout_marginEnd="15dp"
-                                android:layout_marginRight="15dp"
-                                android:layout_marginBottom="15dp"
-                                android:adjustViewBounds="true"
-                                android:foregroundGravity="center"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/img_policy_state_camera_allow"
-                                android:visibility="visible" />
-
-                            <ImageView
-                                android:id="@+id/ivCameraStickerCensor"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="15dp"
-                                android:layout_marginLeft="15dp"
-                                android:layout_marginTop="15dp"
-                                android:layout_marginEnd="15dp"
-                                android:layout_marginRight="15dp"
-                                android:layout_marginBottom="15dp"
-                                android:adjustViewBounds="true"
-                                android:foregroundGravity="center"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/img_policy_state_camera_block"
-                                android:visibility="invisible" />
-
-                            <ProgressBar android:id="@+id/pdProgress" android:visibility="visible" android:layout_width="242dp" android:layout_height="242dp" android:scaleType="fitCenter" android:indeterminateDrawable="@drawable/animation_progress" android:layout_centerInParent="true"/>
-                            <ProgressBar android:id="@+id/pdProgressOF" android:visibility="gone" android:layout_width="242dp" android:layout_height="242dp" android:scaleType="fitCenter" android:indeterminateDrawable="@drawable/animation_progress_of" android:layout_centerInParent="true"/>
-
-                            <LinearLayout
-                                android:id="@+id/llDelayTime"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_alignBottom="@+id/ivCameraSticker"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_marginBottom="42dp"
-                                android:orientation="vertical"
-                                android:visibility="visible">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center_horizontal"
-                                    android:orientation="horizontal">
-
-                                    <TextView
-                                        android:id="@+id/tvDay"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="0"
-                                        android:textColor="#ffffff"
-                                        android:textSize="15dp" />
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginLeft="5dp"
-                                        android:layout_marginRight="5dp"
-                                        android:text="@string/fragment_home_policy_lock_time_00"
-                                        android:textColor="#ffffff"
-                                        android:textSize="15dp" />
+                <LinearLayout android:orientation="horizontal" android:id="@+id/llVisitedTime" android:background="#ffffffff" android:visibility="gone" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginLeft="10.0dip" android:layout_marginRight="10.0dip">
+                    <TextView android:textSize="14.0sp" android:textStyle="bold" android:textColor="#ffffffff" android:gravity="center_vertical" android:background="#ff02aac5" android:paddingLeft="20.0dip" android:paddingTop="10.0dip" android:paddingRight="20.0dip" android:paddingBottom="10.0dip" android:layout_width="150.0dip" android:layout_height="match_parent" android:layout_marginBottom="1.0dip" android:text="@string/mobilesticker_visit_time" />
+                    <RelativeLayout android:background="#ffdddddd" android:layout_width="match_parent" android:layout_height="wrap_content">
+                        <TextView android:textSize="14.0sp" android:textStyle="bold" android:textColor="@color/msticker_color_text_normal" android:gravity="center|right" android:id="@+id/tvVisitedTime" android:background="#ffffffff" android:padding="10.0dip" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="1.0dip" android:text="2017년 02월 03일 11시 11분" android:layout_marginEnd="0.0dip" android:layout_alignParentEnd="true" />
+                    </RelativeLayout>
+                </LinearLayout>
+                <RelativeLayout android:gravity="center" android:orientation="vertical" android:id="@+id/llPolicyState" android:layout_width="match_parent" android:layout_height="match_parent" android:layout_marginBottom="10.0dip" android:layout_centerInParent="true">
+                    <RelativeLayout android:id="@+id/rlPolicy" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_centerInParent="true">
+                        <ImageView android:id="@+id/ivCompany" android:background="@drawable/img_common_company_huawei" android:visibility="gone" android:layout_width="80.0dip" android:layout_height="80.0dip" android:layout_marginLeft="40.0dip" android:layout_marginBottom="20.0dip" android:layout_alignParentBottom="true" />
+                        <ImageView android:id="@+id/ivPolicys" android:background="@null" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5.0dip" android:layout_marginBottom="5.0dip" android:layout_alignParentBottom="true" android:layout_centerHorizontal="true" />
+                        <ImageView android:id="@+id/ivPolicysMain" android:background="@null" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="5.0dip" android:layout_marginBottom="5.0dip" android:layout_alignParentBottom="true" android:layout_centerHorizontal="true" />
+                        <RelativeLayout android:id="@+id/relative" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_above="@+id/llPolicys" android:layout_centerHorizontal="true">
+                            <ProgressBar android:id="@+id/pdProgress" android:visibility="visible" android:layout_width="242.0dip" android:layout_height="242.0dip" android:scaleType="fitCenter" android:indeterminateDrawable="@drawable/animation_progress" android:layout_centerInParent="true" />
+                            <ImageView android:id="@+id/ivCameraSticker" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="15.0dip" android:layout_marginBottom="15.0dip" android:src="@null" android:scaleType="centerCrop" android:adjustViewBounds="true" android:layout_centerInParent="true" android:foregroundGravity="center" android:layout_marginStart="15.0dip" android:layout_marginEnd="15.0dip" />
+                            <RelativeLayout android:layout_gravity="center" android:id="@+id/rlintegrity" android:visibility="invisible" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_centerInParent="true">
+                                <ImageView android:id="@+id/ivViolation" android:background="@null" android:visibility="visible" android:layout_width="match_parent" android:layout_height="50.0dip" android:layout_marginTop="15.0dip" android:layout_marginBottom="15.0dip" android:scaleType="centerCrop" android:adjustViewBounds="true" android:layout_centerInParent="true" android:foregroundGravity="center" android:layout_marginStart="15.0dip" android:layout_marginEnd="15.0dip" />
+                                <TextView android:textSize="20.0sp" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/common___invalid_app_not_installed_integrity" android:layout_centerHorizontal="true" android:layout_centerVertical="true" />
+                            </RelativeLayout>
+                            <LinearLayout android:layout_gravity="center_horizontal" android:orientation="vertical" android:id="@+id/llDelayTime" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="0.0dip" android:layout_alignBottom="@+id/ivCameraSticker">
+                                <LinearLayout android:gravity="center_horizontal" android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+                                    <TextView android:textSize="15.0dip" android:textColor="#ffffffff" android:id="@+id/tvDay" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" />
+                                    <TextView android:textSize="15.0dip" android:textColor="#ffffffff" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="5.0dip" android:layout_marginRight="5.0dip" android:text="@string/fragment_home_policy_lock_time_00" />
                                 </LinearLayout>
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center_horizontal"
-                                    android:orientation="horizontal">
-
-                                    <TextView
-                                        android:id="@+id/tvHour"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="00"
-                                        android:textColor="#ffffff"
-                                        android:textSize="15dp" />
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginLeft="5dp"
-                                        android:layout_marginRight="5dp"
-                                        android:text=":"
-                                        android:textColor="#ffffff"
-                                        android:textSize="15dp" />
-
-                                    <TextView
-                                        android:id="@+id/tvMin"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="00"
-                                        android:textColor="#ffffff"
-                                        android:textSize="15dp" />
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginLeft="5dp"
-                                        android:layout_marginRight="5dp"
-                                        android:text=":"
-                                        android:textColor="#ffffff"
-                                        android:textSize="15dp" />
-
-                                    <TextView
-                                        android:id="@+id/tvSec"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="00"
-                                        android:textColor="#ffffff"
-                                        android:textSize="15dp"
-                                        android:textStyle="bold" />
+                                <LinearLayout android:gravity="center_horizontal" android:orientation="horizontal" android:id="@+id/llTime" android:layout_width="match_parent" android:layout_height="wrap_content">
+                                    <TextView android:textSize="15.0dip" android:textColor="#ffffffff" android:id="@+id/tvHour" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" />
+                                    <TextView android:textSize="15.0dip" android:textColor="#ffffffff" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="5.0dip" android:layout_marginRight="5.0dip" android:text=":" />
+                                    <TextView android:textSize="15.0dip" android:textColor="#ffffffff" android:id="@+id/tvMin" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" />
+                                    <TextView android:textSize="15.0dip" android:textColor="#ffffffff" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="5.0dip" android:layout_marginRight="5.0dip" android:text=":" />
+                                    <TextView android:textSize="15.0dip" android:textStyle="bold" android:textColor="#ffffffff" android:id="@+id/tvSec" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="00" />
                                 </LinearLayout>
                             </LinearLayout>
+                            <ProgressBar android:id="@+id/pbLocation" android:visibility="invisible" android:layout_width="100.0dip" android:layout_height="100.0dip" android:indeterminateDrawable="@drawable/animation_progress" android:layout_centerInParent="true" style="?android:progressBarStyle" />
                         </RelativeLayout>
+                        <LinearLayout android:gravity="center" android:orientation="horizontal" android:id="@+id/llPolicys" android:visibility="gone" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="5.0dip" android:layout_alignParentBottom="true">
+                            <ImageView android:id="@+id/ivCamera" android:background="@drawable/img_policy_camera" android:layout_width="50.0dip" android:layout_height="70.0dip" />
+                            <ImageView android:id="@+id/ivGps" android:background="@drawable/img_policy_gps" android:layout_width="50.0dip" android:layout_height="70.0dip" />
+                        </LinearLayout>
                     </RelativeLayout>
                 </RelativeLayout>
+                <LinearLayout android:gravity="center_horizontal" android:orientation="vertical" android:id="@+id/llDescription" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="10.0dip" android:layout_above="@+id/llVisitedTime">
+                    <TextView android:textSize="14.0sp" android:textStyle="bold" android:textColor="@color/msticker_color_common_description_text" android:gravity="center_horizontal" android:background="@color/msticker_color_visit_ready_description_text_background" android:padding="5.0dip" android:visibility="gone" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginLeft="10.0dip" android:layout_marginRight="10.0dip" android:text="@string/mobilesticker_visit_des_lock" />
+                </LinearLayout>
             </RelativeLayout>
         </RelativeLayout>
-    </RelativeLayout>
+        <RelativeLayout android:gravity="center" android:orientation="horizontal" android:id="@+id/rlStateCommant" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_alignParentBottom="true" app:layout_constraintBottom_toTopOf="@+id/rlVersion" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent">
+            <RelativeLayout android:orientation="horizontal" android:id="@+id/rlButton" android:paddingBottom="10.0dip" android:layout_width="match_parent" android:layout_height="wrap_content">
+                <Button android:textSize="16.0dip" android:textStyle="bold" android:textColor="#ffffffff" android:gravity="center" android:layout_gravity="center_horizontal" android:id="@+id/btnCameraDeny" android:background="@drawable/style_mndmdm_btn_deny" android:visibility="visible" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginLeft="10.0dip" android:layout_marginRight="10.0dip" android:text="@string/mndmdm_common_camera_deny" />
+                <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent" android:layout_height="wrap_content" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="0.5" app:layout_constraintStart_toStartOf="parent">
+                    <Button android:textSize="16.0dip" android:textStyle="bold" android:textColor="#ffffffff" android:gravity="center" android:id="@+id/btnCameraAllowFull" android:background="@drawable/style_mndmdm_btn_small_allow" android:padding="5.0dip" android:visibility="invisible" android:layout_width="0.0dip" android:layout_height="wrap_content" android:layout_marginLeft="10.0dip" android:layout_marginRight="10.0dip" android:text="@string/mndmdm_common_beacon_allow" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toStartOf="@+id/btnAllowGPS" app:layout_constraintHorizontal_chainStyle="spread" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" app:layout_goneMarginEnd="0.0dip" app:layout_goneMarginStart="0.0dip" />
+                    <Button android:textSize="16.0dip" android:textStyle="bold" android:textColor="#ffffffff" android:gravity="center" android:id="@+id/btnAllowGPS" android:background="@drawable/style_mndmdm_btn_small_allow" android:padding="5.0dip" android:visibility="visible" android:layout_width="0.0dip" android:layout_height="wrap_content" android:layout_marginLeft="10.0dip" android:layout_marginRight="10.0dip" android:text="@string/mndmdm_common_gps_allow" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toStartOf="@+id/btnCheckEntryControl" app:layout_constraintStart_toEndOf="@+id/btnCameraAllowFull" app:layout_constraintTop_toTopOf="parent" app:layout_goneMarginEnd="0.0dip" app:layout_goneMarginStart="0.0dip" />
+                    <Button android:textSize="16.0dip" android:textStyle="bold" android:textColor="#ffffffff" android:gravity="center" android:id="@+id/btnCheckEntryControl" android:background="@drawable/style_mndmdm_btn_small_allow" android:padding="5.0dip" android:visibility="visible" android:layout_width="0.0dip" android:layout_height="wrap_content" android:layout_marginLeft="10.0dip" android:layout_marginRight="10.0dip" android:text="@string/mndmdm_common_check_entry_control" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toEndOf="@+id/btnAllowGPS" app:layout_constraintTop_toTopOf="parent" app:layout_goneMarginEnd="0.0dip" app:layout_goneMarginStart="0.0dip" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:weightSum="100.0">
+                    <Button android:textSize="16.0dip" android:textStyle="bold" android:textColor="#ffffffff" android:gravity="center" android:id="@+id/btnCameraAllow" android:background="@drawable/style_mndmdm_btn_small_allow" android:padding="5.0dip" android:visibility="invisible" android:layout_width="0.0dip" android:layout_height="wrap_content" android:layout_marginLeft="10.0dip" android:layout_marginRight="10.0dip" android:text="@string/mndmdm_common_camera_allow" android:layout_weight="50.0" />
+                    <Button android:textSize="16.0dip" android:textStyle="bold" android:textColor="#ffffffff" android:gravity="center" android:id="@+id/btnCameraAllowPure" android:background="@drawable/style_mndmdm_btn_deny_pure" android:padding="5.0dip" android:visibility="invisible" android:layout_width="0.0dip" android:layout_height="wrap_content" android:layout_marginLeft="10.0dip" android:layout_marginRight="10.0dip" android:text="@string/mndmdm_common_camera_allow" android:layout_weight="100.0" />
+                </LinearLayout>
+                <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:weightSum="100.0">
+                    <Button android:textSize="16.0dip" android:textStyle="bold" android:textColor="#ffffffff" android:id="@+id/btnAddFuncAllow" android:background="@drawable/style_mndmdm_btn_deny" android:padding="5.0dip" android:visibility="invisible" android:layout_width="0.0dip" android:layout_height="wrap_content" android:layout_marginLeft="10.0dip" android:layout_marginRight="10.0dip" android:text="@string/mndmdm_common_add_func_allow_2" android:layout_weight="100.0" />
+                </LinearLayout>
+                <LinearLayout android:orientation="horizontal" android:id="@+id/llButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:weightSum="100.0" />
+            </RelativeLayout>
+        </RelativeLayout>
+        <RelativeLayout android:gravity="center_horizontal" android:id="@+id/rlVersion" android:background="@color/common_mndmdm_background_border" android:padding="10.0dip" android:focusable="true" android:clickable="true" android:layout_width="match_parent" android:layout_height="wrap_content" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent">
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true">
+                <TextView android:textSize="12.0dip" android:textColor="@color/common_base_color_txt_gray" android:id="@+id/tvAgentVersionTitle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Version " />
+                <TextView android:textSize="12.0dip" android:textColor="@color/common_base_color_txt" android:id="@+id/tvAgentVersion" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3.0.13" />
+            </LinearLayout>
+        </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        layout="@layout/drawer_left_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:layout_marginEnd="-64.0dip"
+        android:layout_marginRight="-64.0dip" />
+
+    </androidx.drawerlayout.widget.DrawerLayout>
 </FrameLayout>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Left drawer panel from originalSource/res/layout-xhdpi/drawer_base.xml (DrawerLayout child). -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/left_drawer"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="start"
+    android:background="@color/common_mndmdm_background"
+    android:clickable="true"
+    android:layout_marginEnd="-64.0dip"
+    android:layout_marginRight="-64.0dip">
+
+    <Button
+        android:id="@+id/btnClose"
+        android:layout_width="40.0dip"
+        android:layout_height="40.0dip"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10.0dip"
+        android:layout_marginBottom="5.0dip"
+        android:layout_marginStart="5.0dip"
+        android:layout_marginEnd="10.0dip"
+        android:background="@android:drawable/ic_menu_close_clear_cancel"
+        android:contentDescription="@string/mnfake_drawer_close" />
+
+    <RelativeLayout
+        android:id="@+id/rlListTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/common_mndmdm_background"
+        android:padding="20.0dip">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/ivLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/img_common_mmsa_logo_menu" />
+
+            <TextView
+                android:id="@+id/tvCopyRightnVersion"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ivLogo"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvCallCenter2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ivLogo"
+                android:layout_marginTop="8.0dip"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="sans-serif"
+                android:gravity="center_horizontal"
+                android:text="@string/common_call_center"
+                android:textColor="#ffffffff"
+                android:textStyle="bold"
+                android:visibility="visible" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlBottom"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/rlListTitle"
+        android:background="@color/common_mndmdm_background">
+
+        <ListView
+            android:id="@+id/lvDrawerMenu"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/btnDelete"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="start"
+            android:background="@color/common_mndmdm_background"
+            android:choiceMode="singleChoice"
+            android:divider="@color/common_mndmdm_list_border"
+            android:dividerHeight="1.0dip" />
+
+        <ImageView
+            android:id="@+id/ivCopyRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10.0dip"
+            android:visibility="gone" />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="1.0dip"
+            android:layout_above="@id/ivCopyRight"
+            android:background="@color/msticker_color_drawer_divider" />
+
+        <TextView
+            android:id="@+id/tvCallCenter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/ivCopyRight"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10.0dip"
+            android:clickable="true"
+            android:paddingLeft="20.0dip"
+            android:paddingRight="20.0dip"
+            android:text="02-2262-0000"
+            android:textColor="#ff333333"
+            android:textSize="30.0sp"
+            android:textStyle="bold"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/ivCallCenterImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/tvCallCenter"
+            android:layout_alignLeft="@id/tvCallCenter"
+            android:background="@drawable/img_common_call_center_title"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="10.0dip"
+            android:layout_marginRight="10.0dip"
+            android:layout_marginBottom="10.0dip"
+            android:background="@drawable/style_common_btn_red"
+            android:text="@string/common___delete_mmsa"
+            android:textColor="@color/common_base_color_txt"
+            android:textSize="20.0sp" />
+    </RelativeLayout>
+</RelativeLayout>

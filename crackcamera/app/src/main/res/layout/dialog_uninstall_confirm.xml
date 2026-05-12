@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Same shell as dialog_nfc_settings_warning: bottom sheet, dark rounded card, padding, typography. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="24dp">
+
+    <LinearLayout
+        android:id="@+id/uninstallSheetCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/mnfake_dialog_sheet_dark_bg"
+        android:orientation="vertical"
+        android:paddingLeft="28dp"
+        android:paddingTop="20dp"
+        android:paddingRight="28dp"
+        android:paddingBottom="18dp">
+
+        <TextView
+            android:id="@+id/tvUninstallTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/common___delete_mmsa"
+            android:textColor="@color/common_txt_write"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvUninstallBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/common_app_remove_request_message_commmon"
+            android:textColor="@color/common_txt_write"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnUninstallCancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/mnfake_dialog_confirm_btn_bg"
+                android:gravity="center"
+                android:minHeight="40dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="@string/mnfake_dialog_cancel"
+                android:textAllCaps="false"
+                android:textColor="@color/common_txt_write"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/btnUninstallOk"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/mnfake_dialog_confirm_btn_bg"
+                android:gravity="center"
+                android:minHeight="40dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="@string/mnfake_dialog_confirm"
+                android:textAllCaps="false"
+                android:textColor="@color/common_txt_write"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

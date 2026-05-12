@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Section row: darker band vs drawer list (#252525), larger label, inset from edge. -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tvDrawerSectionTitle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="48.0dip"
+    android:gravity="center_vertical"
+    android:background="@color/common_mndmdm_background_border"
+    android:paddingLeft="22.0dip"
+    android:paddingRight="15.0dip"
+    android:paddingTop="12.0dip"
+    android:paddingBottom="12.0dip"
+    android:textSize="18.0sp"
+    android:textStyle="bold"
+    android:textColor="@color/common_base_color_txt_gray"
+    android:includeFontPadding="false" />
