@@ -16,11 +16,8 @@ import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -35,7 +32,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -43,10 +39,6 @@ import static com.haruhi.lex.crackcamera.Notification.sendNotification;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final long BEACON_DIALOG_PHASE1_MS = 2800L;
-    private static final long BEACON_DIALOG_AUTO_TOGGLE_MS = 5000L;
-    /** After styled confirm (확인) dismisses, wait before {@link #onSwitchCamera}. */
-    private static final long STYLED_CONFIRM_POST_DISMISS_DELAY_MS = 1000L;
     /**
      * Delay NFC-off sheet until after first frame / init (see
      * {@link #maybeShowNfcOffBottomDialog}).
@@ -111,10 +103,10 @@ public class MainActivity extends AppCompatActivity {
                         onSwitchCamera(v);
                     } else if (!suspended) {
                         // Red only: beacon sheet → timer/cancel (→ yellow).
-                        showBeaconRecognitionDialog(v);
+                        BeaconRecognitionDialog.show(MainActivity.this, v, mainHandler);
                     } else {
                         // Yellow only: dark OK/Cancel sheet → 확인 (→ red).
-                        showCameraToggleStyledConfirm(v);
+                        MainStyledDialogs.showCameraToggleStyledConfirm(MainActivity.this, v, mainHandler);
                     }
                 }
             });
@@ -212,16 +204,7 @@ public class MainActivity extends AppCompatActivity {
                 .setView(content)
                 .create();
 
-        Window window = dialog.getWindow();
-        if (window != null) {
-            window.setBackgroundDrawableResource(android.R.color.transparent);
-            WindowManager.LayoutParams lp = window.getAttributes();
-            lp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            window.setAttributes(lp);
-            window.setGravity(Gravity.BOTTOM);
-        }
+        AlertDialogWindows.styleBottomSheet(dialog.getWindow());
 
         Button dismissBtn = content.findViewById(R.id.btnNfcDismiss);
         if (dismissBtn != null) {
@@ -483,55 +466,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Same presentation as {@link #maybeShowNfcOffBottomDialog()} (bottom sheet +
-     * dark card layout);
-     * strings {@code common___delete_mmsa} /
-     * {@code common_app_remove_request_message_commmon}.
-     * 확인 launches system uninstall ({@link Intent#ACTION_DELETE} with
-     * {@code package:} URI).
-     */
     private void showUninstallConfirmDialog() {
-        View content = getLayoutInflater().inflate(R.layout.dialog_uninstall_confirm, null);
-        final AlertDialog dialog = new AlertDialog.Builder(this)
-                .setView(content)
-                .create();
-
-        Window window = dialog.getWindow();
-        if (window != null) {
-            window.setBackgroundDrawableResource(android.R.color.transparent);
-            WindowManager.LayoutParams lp = window.getAttributes();
-            lp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            window.setAttributes(lp);
-            window.setGravity(Gravity.BOTTOM);
-        }
-
-        Button btnCancel = content.findViewById(R.id.btnUninstallCancel);
-        Button btnOk = content.findViewById(R.id.btnUninstallOk);
-        if (btnCancel != null) {
-            btnCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-        }
-        if (btnOk != null) {
-            btnOk.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    startSystemUninstallForThisApp();
-                }
-            });
-        }
-
-        dialog.show();
+        MainStyledDialogs.showUninstallConfirm(this);
     }
 
-    private void startSystemUninstallForThisApp() {
+    void startSystemUninstallForThisApp() {
         Uri uri = Uri.parse("package:" + getPackageName());
         Intent intent = new Intent(Intent.ACTION_DELETE, uri);
         startActivity(intent);
@@ -638,170 +577,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        dialog.show();
-    }
-
-    /**
-     * Yellow state only: dark bottom confirm. 확인 calls {@link #onSwitchCamera} (→
-     * red).
-     */
-    private void showCameraToggleStyledConfirm(final View triggerView) {
-        View content = getLayoutInflater().inflate(R.layout.dialog_camera_toggle_confirm, null);
-        TextView tvTitle = content.findViewById(R.id.tvConfirmTitle);
-        TextView tvMessage = content.findViewById(R.id.tvConfirmMessage);
-        if (tvTitle != null) {
-            tvTitle.setText(R.string.mnfake_dialog_camera_block_title);
-        }
-        if (tvMessage != null) {
-            tvMessage.setText(R.string.mnfake_dialog_camera_block_message);
-        }
-
-        final AlertDialog dialog = new AlertDialog.Builder(this)
-                .setView(content)
-                .create();
-
-        Window window = dialog.getWindow();
-        if (window != null) {
-            window.setBackgroundDrawableResource(android.R.color.transparent);
-            WindowManager.LayoutParams lp = window.getAttributes();
-            lp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            window.setAttributes(lp);
-            window.setGravity(Gravity.BOTTOM);
-        }
-
-        View btnCancel = content.findViewById(R.id.btnConfirmCancel);
-        View btnOk = content.findViewById(R.id.btnConfirmOk);
-        if (btnCancel != null) {
-            btnCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-        }
-        if (btnOk != null) {
-            btnOk.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    mainHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            onSwitchCamera(triggerView);
-                        }
-                    }, STYLED_CONFIRM_POST_DISMISS_DELAY_MS);
-                }
-            });
-        }
-
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
-    }
-
-    /**
-     * Red state only: beacon sheet; timer then {@link #onSwitchCamera} (→ yellow),
-     * or 취소 without toggle.
-     */
-    private void showBeaconRecognitionDialog(final View triggerView) {
-        final Runnable[] pendingRunnables = new Runnable[2];
-
-        View content = getLayoutInflater().inflate(R.layout.dialog_beacon, null);
-        final ProgressBar pbSetting = content.findViewById(R.id.pbBeaconSetting);
-        final ProgressBar pbScan = content.findViewById(R.id.pbBeaconScan);
-        final TextView tvSetting = content.findViewById(R.id.tvBeaconSetting);
-        final TextView tvScanning = content.findViewById(R.id.tvBeaconScanning);
-        if (pbScan != null) {
-            pbScan.setVisibility(View.INVISIBLE);
-        }
-
-        final AlertDialog dialog = new AlertDialog.Builder(this)
-                .setView(content)
-                .create();
-
-        Window dialogWindow = dialog.getWindow();
-        if (dialogWindow != null) {
-            dialogWindow.setBackgroundDrawableResource(android.R.color.transparent);
-            // Apply size + gravity before show(): avoids first layout at wrap-content
-            // (looks off-center /
-            // shifted right) then a jump when MATCH_PARENT is applied in onShow.
-            WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-            lp.gravity = Gravity.CENTER;
-            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            dialogWindow.setAttributes(lp);
-        }
-
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface d) {
-                for (int i = 0; i < pendingRunnables.length; i++) {
-                    if (pendingRunnables[i] != null) {
-                        mainHandler.removeCallbacks(pendingRunnables[i]);
-                        pendingRunnables[i] = null;
-                    }
-                }
-            }
-        });
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface d) {
-                pendingRunnables[0] = new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!dialog.isShowing()) {
-                            return;
-                        }
-                        if (pbSetting != null) {
-                            pbSetting.setVisibility(View.INVISIBLE);
-                        }
-                        if (pbScan != null) {
-                            pbScan.setVisibility(View.VISIBLE);
-                        }
-                        if (tvSetting != null) {
-                            tvSetting.setTextColor(ContextCompat.getColor(MainActivity.this,
-                                    R.color.common_mndmdm_text_sub));
-                        }
-                        if (tvScanning != null) {
-                            tvScanning.setTextColor(ContextCompat.getColor(MainActivity.this,
-                                    R.color.common_txt_black));
-                        }
-                    }
-                };
-                pendingRunnables[1] = new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!dialog.isShowing()) {
-                            return;
-                        }
-                        onSwitchCamera(triggerView);
-                        dialog.dismiss();
-                    }
-                };
-                mainHandler.postDelayed(pendingRunnables[0], BEACON_DIALOG_PHASE1_MS);
-                mainHandler.postDelayed(pendingRunnables[1], BEACON_DIALOG_AUTO_TOGGLE_MS);
-            }
-        });
-
-        Button btnCancel = content.findViewById(R.id.btnBeaconCancel);
-        if (btnCancel != null) {
-            btnCancel.setText(R.string.mnfake_dialog_cancel);
-            btnCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    for (int i = 0; i < pendingRunnables.length; i++) {
-                        if (pendingRunnables[i] != null) {
-                            mainHandler.removeCallbacks(pendingRunnables[i]);
-                            pendingRunnables[i] = null;
-                        }
-                    }
-                    dialog.dismiss();
-                }
-            });
-        }
-
-        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
 
