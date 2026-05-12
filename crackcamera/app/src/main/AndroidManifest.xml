@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.haruhi.lex.crackcamera">
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-feature android:name="android.hardware.nfc" android:required="false" />
+
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.ACTION_SCREEN_ON"/>
     <application
@@ -12,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <receiver android:name=".Notification"
+            android:exported="true"
             android:label="NotifyOnBoot">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -20,7 +25,8 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
