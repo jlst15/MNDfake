@@ -9,6 +9,7 @@
 bin/
 gen/
 out/
+scripts/
 
 # Gradle files
 .gradle/
@@ -61,3 +62,6 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
+
+# original reference files
+originalSource/
