@@ -107,9 +107,12 @@
     <string name="common_accessibility_key_factory_reset_5">휴대전화 초기화</string>
     <string name="common_app_remove_fail_message_commmon">카메라 차단 상태에서는 국방모바일보안앱 삭제가 불가능합니다.</string>
     <string name="common_app_remove_message_commmon">카메라 허용 상태에서는 국방모바일보안앱 삭제가 가능합니다.</string>
-    <string name="common_app_remove_request_message_commmon">국방모바일보안 앱 삭제하시겠습니까?\10앱 삭제를 진행하면 설치코드가 삭제되어 앱을 다시 설정해야 합니다.</string>
+    <string name="common_app_remove_request_message_commmon">국방모바일보안 앱 삭제하시겠습니까?\n앱 삭제를 진행하면 설치코드가 삭제되어 앱을\n다시 설정해야 합니다.</string>
     <string name="common_app_secondarea_message_commmon">기능 허용 상태는 모든 기능 사용이 가능합니다.</string>
-    <string name="common_call_center">콜센터 02-6424-5284~6</string>
+    <!-- Same as originalSource values + main screen (tvCallService / tvCallServicePhone); do not use old "콜센터" override. -->
+    <string name="common_call_center_title">고객지원센터</string>
+    <string name="common_call_center_phone">02) 6424 - 5282 ~ 5284</string>
+    <string name="common_call_center">고객지원센터\n02) 6424 - 5282 ~ 5284</string>
     <string name="common_device_admin___description">사업장의 자산보호를 위해 다바이스 관리자(기기관리자)를 허용하시기 바랍니다.</string>
     <string name="common_device_admin_description_store">휴대전화의 카메라 사용을 제어합니다.\10\10------------------------------------------------------------------------\10모든 데이터 삭제 권한은 휴대전화 공장 초기화를 금지하는 용도로만 사용합니다.\10------------------------------------------------------------------------</string>
     <string name="common_device_admin_description_store_officer">휴대전화의 카메라 및 부가기능(녹음, USB, 테더링, WIFI) 사용을 제어합니다.\10\10------------------------------------------------------------------------\10모든 데이터 삭제 권한은 휴대전화 공장 초기화를 금지하는 용도로만 사용합니다.\10------------------------------------------------------------------------</string>
@@ -162,12 +165,15 @@
     <string name="device_admin___count_forward">본 화면은</string>
     <string name="device_admin___released">기기관리자 등록이 해제되었습니다.\10기기관리자를 등록하시기 바랍니다.</string>
     <string name="device_admin___warning">기기관리자에서 해제할 수 없습니다.\10관리자에게 문의하시기 바랍니다.</string>
+    <string name="drawer_section_app">앱 정보</string>
+    <string name="drawer_section_system">시스템 정보</string>
     <string name="drawer_menu_admin">설치정보</string>
     <string name="drawer_menu_agent_release">모바일스티커 삭제</string>
     <string name="drawer_menu_agent_update">업데이트</string>
     <string name="drawer_menu_app">앱 정보</string>
     <string name="drawer_menu_app_store">앱스토어</string>
     <string name="drawer_menu_bug_report">문의하기</string>
+    <string name="drawer_menu_check_violate_area">자율 보안점검</string>
     <string name="drawer_menu_checkout">위치정보 권한 요청</string>
     <string name="drawer_menu_device_manufacture">제조사</string>
     <string name="drawer_menu_device_model">모델명</string>
@@ -186,6 +192,7 @@
     <string name="drawer_menu_qrcode_mdm_release">등록해제</string>
     <string name="drawer_menu_request_release">퇴실신청</string>
     <string name="drawer_menu_self_checkin">수동으로 Check In</string>
+    <string name="drawer_menu_set_area">차단 구역 설정</string>
     <string name="drawer_menu_sms_checkout">비상해제(SMS)</string>
     <string name="drawer_menu_sms_checkout_desc">카메라 허용을 위해 승인코드를 요청합니다.</string>
     <string name="drawer_menu_sms_checkout_failed">승인코드 인증 실패</string>
@@ -427,7 +434,7 @@
     <string name="mndmdm_common_popup_alram_title">알림 설정</string>
     <string name="mndmdm_common_popup_emulator_desc">애뮬레이터에서는 앱 실행 할 수 없습니다.</string>
     <string name="mndmdm_common_popup_emulator_title">애뮬레이터 사용 여부</string>
-    <string name="mndmdm_common_popup_nfc_off_desc">NFC 기능을 기본모드 또는 읽기/쓰기P2P 모드로 설정하시기 바랍니다.</string>
+    <string name="mndmdm_common_popup_nfc_off_desc">NFC 기능을 기본모드 또는 읽기/쓰기P2P\n모드로 설정하시기 바랍니다.</string>
     <string name="mndmdm_common_popup_nfc_off_title">NFC 설정</string>
     <string name="mndmdm_common_popup_rooting_desc">루팅 상태에서는 앱 실행 할 수 없습니다.</string>
     <string name="mndmdm_common_popup_rooting_title">루팅여부</string>
@@ -916,5 +923,7 @@
     <string name="usercheck_title_log_desc">비밀번호를 입력하시기 바랍니다.</string>
     <string name="usercheck_title_log_not_exist">로그파일이 없습니다.</string>
     <string name="usercheck_title_subdesc">설치코드 정보를 입력하시기 바랍니다.</string>
-    <string name="app_name">국방모바일보안</string>
+    <string name="app_name">국방모바일보안(병사)</string>
+    <string name="mnfake_toolbar_menu">메뉴</string>
+    <string name="mnfake_drawer_close">닫기</string>
 </resources>

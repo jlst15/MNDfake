@@ -121,7 +121,10 @@
     <string name="common_app_remove_message_commmon">카메라 허용 상태에서는 국방모바일보안앱 삭제가 가능합니다.</string>
     <string name="common_app_remove_request_message_commmon">국방모바일보안 앱 삭제하시겠습니까?\10앱 삭제를 진행하면 설치코드가 삭제되어 앱을 다시 설정해야 합니다.</string>
     <string name="common_app_secondarea_message_commmon">기능 허용 상태는 모든 기능 사용이 가능합니다.</string>
-    <string name="common_call_center">콜센터 : 02-6424-5284~6</string>
+    <!-- Matches original APK (국방모바일보안) — screenshot reference -->
+    <string name="common_call_center_title">고객지원센터</string>
+    <string name="common_call_center_phone">02) 6424 - 5282 ~ 5284</string>
+    <string name="common_call_center">고객지원센터\n02) 6424 - 5282 ~ 5284</string>
     <string name="common_device_admin___description">Please Enable Device Manager.</string>
     <string name="common_device_admin_description_store">휴대전화의 카메라 사용을 제어합니다.\10\10------------------------------------------------------------------------\10모든 데이터 삭제 권한은 휴대전화 공장 초기화를 금지하는 용도로만 사용합니다.\10------------------------------------------------------------------------</string>
     <string name="common_device_admin_description_store_officer">휴대전화의 카메라 및 부가기능(녹음, USB, 테더링, WIFI) 사용을 제어합니다.\10\10------------------------------------------------------------------------\10모든 데이터 삭제 권한은 휴대전화 공장 초기화를 금지하는 용도로만 사용합니다.\10------------------------------------------------------------------------</string>
@@ -174,12 +177,15 @@
     <string name="device_admin___count_forward">The following screen</string>
     <string name="device_admin___released">Device Manager has been deregistered.\10Please check your device manager.</string>
     <string name="device_admin___warning">Device manager cannot be deregistered.\10Please check your administrator.</string>
+    <string name="drawer_section_app">앱 정보</string>
+    <string name="drawer_section_system">시스템 정보</string>
     <string name="drawer_menu_admin">Admin Telephone number</string>
     <string name="drawer_menu_agent_release">Delete GateKeeper</string>
     <string name="drawer_menu_agent_update">Update</string>
     <string name="drawer_menu_app">앱 정보</string>
     <string name="drawer_menu_app_store">Google PlayStore</string>
     <string name="drawer_menu_bug_report">Report</string>
+    <string name="drawer_menu_check_violate_area">자율 보안점검</string>
     <string name="drawer_menu_checkout">위치정보 권한 요청</string>
     <string name="drawer_menu_device_manufacture">제조사</string>
     <string name="drawer_menu_device_model">모델명</string>
@@ -198,6 +204,7 @@
     <string name="drawer_menu_qrcode_mdm_release">Deregister</string>
     <string name="drawer_menu_request_release">Request Release</string>
     <string name="drawer_menu_self_checkin">Self Check In</string>
+    <string name="drawer_menu_set_area">차단 구역 설정</string>
     <string name="drawer_menu_sms_checkout">비상해제(SMS)</string>
     <string name="drawer_menu_sms_checkout_desc">카메라 허용을 위해 승인코드를 요청합니다.</string>
     <string name="drawer_menu_sms_checkout_failed">승인코드 인증 실패</string>
@@ -432,6 +439,9 @@
     <string name="mndmdm_common_camera_deny_desc">카메라를 차단합니다</string>
     <string name="mndmdm_common_camera_deny_status">카메라 차단 상태</string>
     <string name="mndmdm_common_camera_deny_status_tts">카메라 차단 상태입니다</string>
+    <string name="mndmdm_common_beacon_allow">기능해제(비콘)</string>
+    <string name="mndmdm_common_gps_allow">기능해제(GPS)</string>
+    <string name="mndmdm_common_check_entry_control">출입통제</string>
     <string name="mndmdm_common_list_item_alert_sound">음성알림</string>
     <string name="mndmdm_common_list_item_alert_sound_dsc">차단 또는 허용 시 음성 알림</string>
     <string name="mndmdm_common_list_item_alert_vibration">진동알림</string>
@@ -445,7 +455,7 @@
     <string name="mndmdm_common_popup_alram_title">알림 설정</string>
     <string name="mndmdm_common_popup_emulator_desc">애뮬레이터에서는 앱 실행 할 수 없습니다.</string>
     <string name="mndmdm_common_popup_emulator_title">애뮬레이터 사용 여부</string>
-    <string name="mndmdm_common_popup_nfc_off_desc">NFC 기능을 기본모드 또는 읽기/쓰기P2P 모드로 설정하시기 바랍니다.</string>
+    <string name="mndmdm_common_popup_nfc_off_desc">NFC 기능을 기본모드 또는\n읽기/쓰기P2P 모드로 설정하시기 바랍니다.</string>
     <string name="mndmdm_common_popup_nfc_off_title">NFC 설정</string>
     <string name="mndmdm_common_popup_rooting_desc">루팅 상태에서는 앱 실행 할 수 없습니다.</string>
     <string name="mndmdm_common_popup_rooting_title">루팅여부</string>
@@ -934,5 +944,15 @@
     <string name="usercheck_title_log_desc">Insert Admin code.</string>
     <string name="usercheck_title_log_not_exist">Not exist File(admin log file)</string>
     <string name="usercheck_title_subdesc">설치코드 정보를 입력하시기 바랍니다.</string>
-    <string name="app_name">국방모바일보안</string>
+    <string name="app_name">국방모바일보안(병사)</string>
+    <string name="mnfake_edit_install_hint">yyyy/MM/dd/HH/mm</string>
+    <string name="mnfake_edit_done">OK</string>
+    <string name="mnfake_dialog_camera_block_title">카메라 차단</string>
+    <string name="mnfake_dialog_camera_block_message">카메라를 수동으로 차단합니다.</string>
+    <string name="mnfake_dialog_cancel">취소</string>
+    <string name="mnfake_dialog_confirm">확인</string>
+    <string name="mnfake_camera_toggle_beacon">기능해제(비콘)</string>
+    <string name="mnfake_beacon_dialog_subtitle">카메라 허용을 위한 비콘 장치를 인식합니다.</string>
+    <string name="mnfake_toolbar_menu">메뉴</string>
+    <string name="mnfake_drawer_close">닫기</string>
 </resources>

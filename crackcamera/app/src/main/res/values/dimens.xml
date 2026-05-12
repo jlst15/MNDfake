@@ -1,3 +1,8 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <!-- Logo sizes from originalSource drawable-xhdpi intrinsic px ÷ 2 (xhdpi → dp), same as shipped MND assets. -->
+    <dimen name="mnd_toolbar_logo_width">82.5dp</dimen>
+    <dimen name="mnd_toolbar_logo_height">66.5dp</dimen>
+    <dimen name="mnd_drawer_logo_width">135.5dp</dimen>
+    <dimen name="mnd_drawer_logo_height">69dp</dimen>
 </resources>
