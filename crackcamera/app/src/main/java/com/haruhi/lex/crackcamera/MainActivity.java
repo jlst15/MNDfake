@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.os.Build;
-import android.widget.CompoundButton;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,7 +22,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -31,10 +29,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -88,9 +84,6 @@ public class MainActivity extends AppCompatActivity {
     public static SharedPreferences sharedPref;
     public static SharedPreferences.Editor sharedEditor;
     public static final String PREF_NAME = "MNDFAKE_PREF";
-    /** Drawer toggles (original APK-style 음성알림 / 진동알림). */
-    private static final String PREF_DRAWER_ALERT_SOUND = "pref_drawer_alert_sound";
-    private static final String PREF_DRAWER_ALERT_VIBRATION = "pref_drawer_alert_vibration";
     /**
      * Pref & UI branch: {@code true} = yellow blocked state (비콘, blocked sticker);
      * {@code false} = red untoggled (allow sticker).
@@ -416,7 +409,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Left drawer: {@link R.layout#drawer_left_panel} only. Red vs yellow differs
      * only in
-     * {@link #buildYellowDrawerRows()} (one extra item under 진동알림).
+     * {@link DrawerMenuRows#buildYellowRows()} (one extra item under 진동알림).
      */
     private void setupDrawer() {
         final DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
@@ -555,8 +548,8 @@ public class MainActivity extends AppCompatActivity {
         if (lvDrawerMenu == null) {
             return;
         }
-        final List<DrawerListRow> rows = blockedUi ? buildYellowDrawerRows() : buildRedDrawerRows();
-        lvDrawerMenu.setAdapter(createDrawerMenuAdapter(rows));
+        final List<DrawerListRow> rows = blockedUi ? DrawerMenuRows.buildYellowRows() : DrawerMenuRows.buildRedRows();
+        lvDrawerMenu.setAdapter(new DrawerMenuAdapter(this, rows, sharedPref, sharedEditor));
         lvDrawerMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -569,232 +562,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    private List<DrawerListRow> buildRedDrawerRows() {
-        final String manufacturer = Build.MANUFACTURER != null ? Build.MANUFACTURER : "";
-        final String model = Build.MODEL != null ? Build.MODEL : "";
-        final String osRelease = Build.VERSION.RELEASE != null ? Build.VERSION.RELEASE : "";
-        final List<DrawerListRow> drawerRows = new ArrayList<>();
-        drawerRows.add(DrawerListRow.section(R.string.drawer_section_app));
-        drawerRows.add(DrawerListRow.nav(R.string.drawer_menu_user_guide, R.drawable.img_ico_menu_guide));
-        drawerRows.add(DrawerListRow.nav(R.string.drawer_menu_log, R.drawable.img_ico_menu_log));
-        drawerRows.add(DrawerListRow.toggle(R.string.mndmdm_common_list_item_alert_sound,
-                R.string.mndmdm_common_list_item_alert_sound_dsc, PREF_DRAWER_ALERT_SOUND,
-                R.drawable.img_ico_menu_voice));
-        drawerRows.add(DrawerListRow.toggle(R.string.mndmdm_common_list_item_alert_vibration,
-                R.string.mndmdm_common_list_item_alert_vibration_dsc, PREF_DRAWER_ALERT_VIBRATION,
-                R.drawable.img_ico_menu_vibration));
-        drawerRows.add(DrawerListRow.section(R.string.drawer_section_system));
-        drawerRows.add(DrawerListRow.kv(R.string.drawer_menu_device_manufacture, manufacturer));
-        drawerRows.add(DrawerListRow.kv(R.string.drawer_menu_device_model, model));
-        drawerRows.add(DrawerListRow.kv(R.string.drawer_menu_device_os_version, osRelease));
-        return drawerRows;
-    }
-
-    /**
-     * Yellow (blocked): same list as red, with
-     * {@link R.string#drawer_menu_gps_checkout} under 진동알림.
-     */
-    private List<DrawerListRow> buildYellowDrawerRows() {
-        List<DrawerListRow> rows = buildRedDrawerRows();
-        rows.add(5, DrawerListRow.nav(R.string.drawer_menu_gps_checkout, R.drawable.img_ico_menu_gps));
-        return rows;
-    }
-
-    private BaseAdapter createDrawerMenuAdapter(final List<DrawerListRow> rows) {
-        return new BaseAdapter() {
-            @Override
-            public int getViewTypeCount() {
-                return 4;
-            }
-
-            @Override
-            public int getItemViewType(int position) {
-                return rows.get(position).kind;
-            }
-
-            @Override
-            public boolean isEnabled(int position) {
-                return true;
-            }
-
-            @Override
-            public int getCount() {
-                return rows.size();
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return rows.get(position);
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return position;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                final DrawerListRow row = rows.get(position);
-                if (row.kind == DrawerListRow.KIND_SECTION) {
-                    View v = convertView;
-                    if (v == null || v.findViewById(R.id.tvDrawerSectionTitle) == null) {
-                        v = LayoutInflater.from(MainActivity.this).inflate(R.layout.layout_drawer_section_header,
-                                parent,
-                                false);
-                    }
-                    TextView tv = v.findViewById(R.id.tvDrawerSectionTitle);
-                    if (tv != null) {
-                        tv.setText(row.titleRes);
-                    }
-                    return v;
-                }
-                if (row.kind == DrawerListRow.KIND_KV) {
-                    View v = convertView;
-                    if (v == null || v.findViewById(R.id.tvKvValue) == null) {
-                        v = LayoutInflater.from(MainActivity.this).inflate(R.layout.layout_drawer_item_system_kv,
-                                parent,
-                                false);
-                    }
-                    TextView tvT = v.findViewById(R.id.tvKvTitle);
-                    TextView tvV = v.findViewById(R.id.tvKvValue);
-                    if (tvT != null) {
-                        tvT.setText(row.titleRes);
-                    }
-                    if (tvV != null) {
-                        tvV.setText(row.kvValue != null ? row.kvValue : "");
-                    }
-                    return v;
-                }
-                if (row.kind == DrawerListRow.KIND_NAV) {
-                    View itemView = convertView;
-                    if (itemView == null || itemView.findViewById(R.id.tvDrawerSectionTitle) != null
-                            || itemView.findViewById(R.id.tvKvValue) != null) {
-                        itemView = LayoutInflater.from(MainActivity.this).inflate(R.layout.layout_list_drawer_item,
-                                parent, false);
-                    }
-                    TextView tvTitle = itemView.findViewById(R.id.tvTitle);
-                    if (tvTitle != null) {
-                        tvTitle.setText(row.titleRes);
-                    }
-                    ImageView ivIcon = itemView.findViewById(R.id.ivIcon);
-                    if (ivIcon != null) {
-                        ivIcon.setBackgroundResource(row.iconRes);
-                        ivIcon.setVisibility(View.VISIBLE);
-                    }
-                    View sw = itemView.findViewById(R.id.swState);
-                    if (sw != null) {
-                        sw.setVisibility(View.GONE);
-                    }
-                    View tvVal = itemView.findViewById(R.id.tvValue);
-                    if (tvVal != null) {
-                        tvVal.setVisibility(View.GONE);
-                    }
-                    View ivDetail = itemView.findViewById(R.id.ivDetail);
-                    if (ivDetail != null) {
-                        ivDetail.setVisibility(View.VISIBLE);
-                    }
-                    return itemView;
-                }
-                View itemView = convertView;
-                if (itemView == null || itemView.findViewById(R.id.tvDrawerSectionTitle) != null
-                        || itemView.findViewById(R.id.tvKvValue) != null) {
-                    itemView = LayoutInflater.from(MainActivity.this).inflate(R.layout.layout_list_drawer_item, parent,
-                            false);
-                }
-                TextView tvTitle = itemView.findViewById(R.id.tvTitle);
-                if (tvTitle != null) {
-                    tvTitle.setText(row.titleRes);
-                }
-                ImageView ivIcon = itemView.findViewById(R.id.ivIcon);
-                if (ivIcon != null) {
-                    if (row.iconRes != 0) {
-                        ivIcon.setBackgroundResource(row.iconRes);
-                        ivIcon.setVisibility(View.VISIBLE);
-                    } else {
-                        ivIcon.setVisibility(View.GONE);
-                    }
-                }
-                TextView tvVal = itemView.findViewById(R.id.tvValue);
-                if (tvVal != null) {
-                    if (row.subtitleRes != 0) {
-                        tvVal.setText(row.subtitleRes);
-                        tvVal.setVisibility(View.VISIBLE);
-                    } else {
-                        tvVal.setVisibility(View.GONE);
-                    }
-                }
-                View ivDetail = itemView.findViewById(R.id.ivDetail);
-                if (ivDetail != null) {
-                    ivDetail.setVisibility(View.GONE);
-                }
-                Switch sw = (Switch) itemView.findViewById(R.id.swState);
-                if (sw != null) {
-                    sw.setVisibility(View.VISIBLE);
-                    sw.setFocusable(false);
-                    sw.setClickable(true);
-                    boolean on = sharedPref != null && sharedPref.getBoolean(row.prefKey, true);
-                    sw.setOnCheckedChangeListener(null);
-                    sw.setChecked(on);
-                    sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            if (sharedEditor != null) {
-                                sharedEditor.putBoolean(row.prefKey, isChecked);
-                                sharedEditor.apply();
-                            }
-                        }
-                    });
-                }
-                return itemView;
-            }
-        };
-    }
-
-    /** One row in the navigation drawer (see {@link #setupDrawer()}). */
-    private static final class DrawerListRow {
-        static final int KIND_SECTION = 0;
-        static final int KIND_NAV = 1;
-        static final int KIND_SWITCH = 2;
-        static final int KIND_KV = 3;
-
-        final int kind;
-        final int titleRes;
-        final int iconRes;
-        /**
-         * Subtitle under title for {@link #KIND_SWITCH} (e.g. original *_dsc strings).
-         */
-        final int subtitleRes;
-        /** Preference key for {@link #KIND_SWITCH}. */
-        final String prefKey;
-        /** Right-side value for {@link #KIND_KV}. */
-        final String kvValue;
-
-        private DrawerListRow(int kind, int titleRes, int iconRes, int subtitleRes, String prefKey, String kvValue) {
-            this.kind = kind;
-            this.titleRes = titleRes;
-            this.iconRes = iconRes;
-            this.subtitleRes = subtitleRes;
-            this.prefKey = prefKey;
-            this.kvValue = kvValue;
-        }
-
-        static DrawerListRow section(int titleRes) {
-            return new DrawerListRow(KIND_SECTION, titleRes, 0, 0, null, null);
-        }
-
-        static DrawerListRow nav(int titleRes, int iconRes) {
-            return new DrawerListRow(KIND_NAV, titleRes, iconRes, 0, null, null);
-        }
-
-        static DrawerListRow toggle(int titleRes, int subtitleRes, String prefKey, int iconRes) {
-            return new DrawerListRow(KIND_SWITCH, titleRes, iconRes, subtitleRes, prefKey, null);
-        }
-
-        static DrawerListRow kv(int titleRes, String value) {
-            return new DrawerListRow(KIND_KV, titleRes, 0, 0, null, value);
-        }
     }
 
     private void pruneOverlappedBottomToolbarRows() {
