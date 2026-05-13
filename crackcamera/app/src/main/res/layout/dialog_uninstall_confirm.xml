@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/common_app_remove_request_message_commmon"
+            android:text="@string/common_app_remove_request_message_common"
             android:textColor="@color/common_txt_write"
             android:textSize="14sp" />
 

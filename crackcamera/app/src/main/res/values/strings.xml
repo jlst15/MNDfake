@@ -108,19 +108,19 @@
     <string name="common___yes">Yes</string>
     <string name="common_accessibility_activity_description_markany">국방모바일보안앱에 권한(접근성 서비스)이 필요합니다. 국방모바일보안앱 보호(삭제 방지)를 위한 목적 이외의 권한 사용을 하지 않습니다.</string>
     <string name="common_accessibility_activity_description_markany_sub">위의 순서와 같이 설정하시기 바랍니다.\10</string>
-    <string name="common_accessibility_allow_complete_commmon">접근성 서비스 활성화 완료 되었습니다.</string>
+    <string name="common_accessibility_allow_complete_common">접근성 서비스 활성화 완료 되었습니다.</string>
     <string name="common_accessibility_deny_app_delete_message">국방모바일보안앱이 카메라 차단 상태에서는 사용할 수 없는 메뉴입니다.</string>
-    <string name="common_accessibility_deny_message_commmon">카메라 차단 상태에서는 사용할 수 없는 기능입니다.</string>
+    <string name="common_accessibility_deny_message_common">카메라 차단 상태에서는 사용할 수 없는 기능입니다.</string>
     <string name="common_accessibility_description">국방모바일보안은 앱 보호(삭제 방지)를 위한 목적 이외의 권한 사용을 사용하지 않습니다.</string>
     <string name="common_accessibility_key_factory_reset_1">휴대폰 초기화</string>
     <string name="common_accessibility_key_factory_reset_2">공장 초기화</string>
     <string name="common_accessibility_key_factory_reset_3">factory reset</string>
     <string name="common_accessibility_key_factory_reset_4">모든 데이터 삭제</string>
     <string name="common_accessibility_key_factory_reset_5">휴대전화 초기화</string>
-    <string name="common_app_remove_fail_message_commmon">카메라 차단 상태에서는 국방모바일보안앱 삭제가 불가능합니다.</string>
-    <string name="common_app_remove_message_commmon">카메라 허용 상태에서는 국방모바일보안앱 삭제가 가능합니다.</string>
-    <string name="common_app_remove_request_message_commmon">국방모바일보안 앱 삭제하시겠습니까?\10앱 삭제를 진행하면 설치코드가 삭제되어 앱을 다시 설정해야 합니다.</string>
-    <string name="common_app_secondarea_message_commmon">기능 허용 상태는 모든 기능 사용이 가능합니다.</string>
+    <string name="common_app_remove_fail_message_common">카메라 차단 상태에서는 국방모바일보안앱 삭제가 불가능합니다.</string>
+    <string name="common_app_remove_message_common">카메라 허용 상태에서는 국방모바일보안앱 삭제가 가능합니다.</string>
+    <string name="common_app_remove_request_message_common">국방모바일보안 앱 삭제하시겠습니까?\10앱 삭제를 진행하면 설치코드가 삭제되어 앱을 다시 설정해야 합니다.</string>
+    <string name="common_app_secondarea_message_common">기능 허용 상태는 모든 기능 사용이 가능합니다.</string>
     <!-- Matches original APK (국방모바일보안) — screenshot reference -->
     <string name="common_call_center_title">고객지원센터</string>
     <string name="common_call_center_phone">02) 6424 - 5282 ~ 5284</string>
@@ -951,8 +951,13 @@
     <string name="mnfake_dialog_camera_block_message">카메라를 수동으로 차단합니다.</string>
     <string name="mnfake_dialog_cancel">취소</string>
     <string name="mnfake_dialog_confirm">확인</string>
-    <string name="mnfake_camera_toggle_beacon">기능해제(비콘)</string>
+    <string name="mnfake_camera_toggle_beacon">카메라 해제(비콘)</string>
     <string name="mnfake_beacon_dialog_subtitle">카메라 허용을 위한 비콘 장치를 인식합니다.</string>
     <string name="mnfake_toolbar_menu">메뉴</string>
     <string name="mnfake_drawer_close">닫기</string>
+    <string name="mnfake_log_back">Back</string>
+    <string name="mnfake_log_empty">No entries yet.</string>
+    <string name="mnfake_log_event_install_updated">Install date/time updated.</string>
+    <string name="mnfake_log_camera_block_manual">카메라 차단 | 수동</string>
+    <string name="mnfake_log_camera_allow_beacon">카메라 허용 | 비콘</string>
 </resources>

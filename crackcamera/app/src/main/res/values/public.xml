@@ -1666,19 +1666,19 @@
     <public type="string" name="common___yes" id="2131492969" />
     <public type="string" name="common_accessibility_activity_description_markany" id="2131492970" />
     <public type="string" name="common_accessibility_activity_description_markany_sub" id="2131492971" />
-    <public type="string" name="common_accessibility_allow_complete_commmon" id="2131492972" />
+    <public type="string" name="common_accessibility_allow_complete_common" id="2131492972" />
     <public type="string" name="common_accessibility_deny_app_delete_message" id="2131492973" />
-    <public type="string" name="common_accessibility_deny_message_commmon" id="2131492974" />
+    <public type="string" name="common_accessibility_deny_message_common" id="2131492974" />
     <public type="string" name="common_accessibility_description" id="2131492975" />
     <public type="string" name="common_accessibility_key_factory_reset_1" id="2131492976" />
     <public type="string" name="common_accessibility_key_factory_reset_2" id="2131492977" />
     <public type="string" name="common_accessibility_key_factory_reset_3" id="2131492978" />
     <public type="string" name="common_accessibility_key_factory_reset_4" id="2131492979" />
     <public type="string" name="common_accessibility_key_factory_reset_5" id="2131492980" />
-    <public type="string" name="common_app_remove_fail_message_commmon" id="2131492981" />
-    <public type="string" name="common_app_remove_message_commmon" id="2131492982" />
-    <public type="string" name="common_app_remove_request_message_commmon" id="2131492983" />
-    <public type="string" name="common_app_secondarea_message_commmon" id="2131492984" />
+    <public type="string" name="common_app_remove_fail_message_common" id="2131492981" />
+    <public type="string" name="common_app_remove_message_common" id="2131492982" />
+    <public type="string" name="common_app_remove_request_message_common" id="2131492983" />
+    <public type="string" name="common_app_secondarea_message_common" id="2131492984" />
     <public type="string" name="common_call_center" id="2131492985" />
     <public type="string" name="common_device_admin___description" id="2131492986" />
     <public type="string" name="common_device_admin_description_store" id="2131492987" />
