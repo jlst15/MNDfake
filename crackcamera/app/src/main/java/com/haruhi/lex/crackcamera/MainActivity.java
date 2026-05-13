@@ -34,19 +34,25 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import static com.haruhi.lex.crackcamera.Notification.sendNotification;
 
 /**
- * Primary screen: camera deny toggle, navigation drawer, NFC / uninstall / beacon dialogs, and
+ * Primary screen: camera deny toggle, navigation drawer, NFC / uninstall /
+ * beacon dialogs, and
  * hidden install-date flow.
  * <p>
  * Supporting types (same package, behavior unchanged):
  * <ul>
- * <li>{@link DrawerMenuRows}, {@link DrawerMenuAdapter}, {@link DrawerListRow} — drawer list
+ * <li>{@link DrawerMenuRows}, {@link DrawerMenuAdapter}, {@link DrawerListRow}
+ * — drawer list
  * content and adapter</li>
- * <li>{@link AlertDialogWindows} — shared {@link android.app.AlertDialog} window sizing and
+ * <li>{@link AlertDialogWindows} — shared {@link android.app.AlertDialog}
+ * window sizing and
  * gravity</li>
- * <li>{@link MainStyledDialogs} — uninstall sheet and yellow→red camera confirmation sheet</li>
- * <li>{@link BeaconRecognitionDialog} — red-state beacon sheet; timings {@link BeaconRecognitionDialog#PHASE1_MS},
+ * <li>{@link MainStyledDialogs} — uninstall sheet and yellow→red camera
+ * confirmation sheet</li>
+ * <li>{@link BeaconRecognitionDialog} — red-state beacon sheet; timings
+ * {@link BeaconRecognitionDialog#PHASE1_MS},
  * {@link BeaconRecognitionDialog#AUTO_TOGGLE_MS}</li>
- * <li>{@link MainCameraUi} — toolbar / header visuals driven by {@link #onSwitchCamera(View)}</li>
+ * <li>{@link MainCameraUi} — toolbar / header visuals driven by
+ * {@link #onSwitchCamera(View)}</li>
  * </ul>
  */
 public class MainActivity extends AppCompatActivity {
@@ -104,6 +110,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        TextView tvAgentVersion = findViewById(R.id.tvAgentVersion);
+        if (tvAgentVersion != null) {
+            tvAgentVersion.setText(BuildConfig.VERSION_NAME);
+        }
         pruneOverlappedBottomToolbarRows();
         Button denyBtn = findViewById(R.id.btnCameraDeny);
         if (denyBtn != null) {
@@ -159,10 +169,13 @@ public class MainActivity extends AppCompatActivity {
         init_screen = false;
         onSwitchCamera(findViewById(R.id.btnCameraDeny));
         init_screen = true;
+        /* Cold start only: opposite of no-arg boot/delete gate — skip pristine install (no status key). */
+        if (sharedPref.contains("status") && !sharedPref.getBoolean("status", false)) {
+            sendNotification(getApplicationContext(), getString(R.string.policy_camera_deny_noti_comment));
+        }
         // if(mutex_user==0)
         a1.start();
         mutex_user++;
-        sendNotification(getApplicationContext());
         System.out.println("설정 끝 " + mutex_user);
     }
 
@@ -388,7 +401,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Resolve views optional for legacy ids not present in the copied fragment layout.
+     * Resolve views optional for legacy ids not present in the copied fragment
+     * layout.
      * Package-visible for {@link MainCameraUi}.
      */
     <T extends View> T optionalViewById(String name, Class<T> clazz) {
@@ -481,14 +495,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Bottom-sheet uninstall confirmation; delegates to {@link MainStyledDialogs#showUninstallConfirm(MainActivity)}.
+     * Bottom-sheet uninstall confirmation; delegates to
+     * {@link MainStyledDialogs#showUninstallConfirm(MainActivity)}.
      */
     private void showUninstallConfirmDialog() {
         MainStyledDialogs.showUninstallConfirm(this);
     }
 
     /**
-     * Launches the system uninstall UI for this package. Package-visible for {@link MainStyledDialogs}.
+     * Launches the system uninstall UI for this package. Package-visible for
+     * {@link MainStyledDialogs}.
      */
     void startSystemUninstallForThisApp() {
         Uri uri = Uri.parse("package:" + getPackageName());
@@ -518,6 +534,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (drawerLayout != null) {
                     drawerLayout.closeDrawer(GravityCompat.START);
+                }
+                if (r.kind == DrawerListRow.KIND_NAV && r.titleRes == R.string.drawer_menu_log) {
+                    startActivity(new Intent(MainActivity.this, LogActivity.class));
                 }
             }
         });
@@ -587,6 +606,8 @@ public class MainActivity extends AppCompatActivity {
                 saveSetting();
                 updatePanel();
                 restoreInstallSecretLogo();
+                AppEventLog.append(MainActivity.this, AppEventLog.KIND_OTHER,
+                        getString(R.string.mnfake_log_event_install_updated));
             }
         }, startSets[3], startSets[4], true);
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -601,16 +622,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Applies camera blocked vs allowed UI and optionally flips {@link #suspended} when
-     * {@link #init_screen} is true (user-driven toggle). Startup uses {@code init_screen == false}
+     * Applies camera blocked vs allowed UI and optionally flips {@link #suspended}
+     * when
+     * {@link #init_screen} is true (user-driven toggle). Startup uses
+     * {@code init_screen == false}
      * so the first call only syncs visuals from prefs.
      * <p>
-     * Order matters: {@link MainCameraUi#applyToggleVisuals(MainActivity)} paints from the
-     * <em>current</em> {@code suspended} flag; {@code drawerMenuYellow} snapshots that flag for
-     * {@link #refreshDrawerMenuMode(boolean)} before {@code suspended} may be toggled inside the
+     * Order matters: {@link MainCameraUi#applyToggleVisuals(MainActivity)} paints
+     * from the
+     * <em>current</em> {@code suspended} flag; {@code drawerMenuYellow} snapshots
+     * that flag for
+     * {@link #refreshDrawerMenuMode(boolean)} before {@code suspended} may be
+     * toggled inside the
      * {@code init_screen} block.
      *
-     * @param view optional trigger (e.g. deny button); may be {@code null} on synthetic calls
+     * @param view optional trigger (e.g. deny button); may be {@code null} on
+     *             synthetic calls
      */
     public void onSwitchCamera(View view) {
         MainCameraUi.applyToggleVisuals(this);
@@ -623,6 +650,13 @@ public class MainActivity extends AppCompatActivity {
                 vibrateLongYellowToRed();
             }
             saveSetting();
+            if (!suspended) {
+                AppEventLog.append(MainActivity.this, AppEventLog.KIND_BLOCK,
+                        getString(R.string.mnfake_log_camera_block_manual));
+            } else {
+                AppEventLog.append(MainActivity.this, AppEventLog.KIND_ALLOW,
+                        getString(R.string.mnfake_log_camera_allow_beacon));
+            }
         }
         updatePanel();
         refreshDrawerMenuMode(drawerMenuYellow);
@@ -637,7 +671,7 @@ public class MainActivity extends AppCompatActivity {
         if (vibrator == null || !vibrator.hasVibrator()) {
             return;
         }
-        final long ms = 1000L;
+        final long ms = 1100L;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             vibrator.vibrate(VibrationEffect.createOneShot(ms, VibrationEffect.DEFAULT_AMPLITUDE));
         } else {

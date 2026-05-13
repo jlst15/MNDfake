@@ -104,7 +104,7 @@
         <RelativeLayout android:gravity="center_horizontal" android:id="@+id/rlVersion" android:background="@color/common_mndmdm_background_border" android:padding="10.0dip" android:focusable="true" android:clickable="true" android:layout_width="match_parent" android:layout_height="wrap_content" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent">
             <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true">
                 <TextView android:textSize="12.0dip" android:textColor="@color/common_base_color_txt_gray" android:id="@+id/tvAgentVersionTitle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Version " />
-                <TextView android:textSize="12.0dip" android:textColor="@color/common_base_color_txt" android:id="@+id/tvAgentVersion" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3.0.13" />
+                <TextView android:textSize="12.0dip" android:textColor="@color/common_base_color_txt" android:id="@+id/tvAgentVersion" android:layout_width="wrap_content" android:layout_height="wrap_content" />
             </LinearLayout>
         </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
