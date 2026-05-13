@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Names aligned with originalSource public.xml: activity_log, lvLog -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mnfake_log_content"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/mnfake_log_top_bar"
+        android:padding="8dip">
+
+        <ImageButton
+            android:id="@+id/btnLogBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="5dip"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/mnfake_log_back"
+            android:padding="8dip"
+            android:src="@drawable/abc_ic_ab_back_material" />
+
+        <TextView
+            android:id="@+id/tvLogTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/drawer_menu_log"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvLogEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="24dip"
+        android:text="@string/mnfake_log_empty"
+        android:textColor="@color/common_base_color_txt_gray"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/lvLog"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/mnfake_log_content"
+        android:cacheColorHint="@android:color/transparent"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10dip"
+        android:paddingStart="5dip"
+        android:paddingEnd="5dip"
+        android:paddingBottom="10dip" />
+
+    <Button
+        android:id="@+id/btnLogClose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dip"
+        android:layout_marginTop="8dip"
+        android:layout_marginEnd="16dip"
+        android:layout_marginBottom="16dip"
+        android:background="@drawable/mnfake_btn_log_close"
+        android:minHeight="48dip"
+        android:text="@string/common___close"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+</LinearLayout>

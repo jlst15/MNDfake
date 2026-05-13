@@ -16,6 +16,16 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <!-- LogActivity: window/body = dark grey; status bar = black to align with top strip -->
+    <style name="AppTheme.LogScreen" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/mnfake_log_content</item>
+        <item name="android:colorBackground">@color/mnfake_log_content</item>
+        <item name="colorPrimaryDark">@color/mnfake_log_top_bar</item>
+        <item name="android:statusBarColor">@color/mnfake_log_top_bar</item>
+        <item name="android:navigationBarColor">@color/mnfake_log_content</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>

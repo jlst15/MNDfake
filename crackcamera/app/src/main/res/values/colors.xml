@@ -137,6 +137,8 @@
     <color name="tooltip_background_dark">#e6616161</color>
     <color name="tooltip_background_light">#e6ffffff</color>
     <color name="transparent">#00000000</color>
+    <color name="mnfake_log_top_bar">#252525</color>
+    <color name="mnfake_log_content">#ff252525</color>
     <!-- 기능해제(비콘) primary button: grey capsule -->
     <color name="mnfake_beacon_pill_grey">#ff757575</color>
     <color name="mnfake_beacon_pill_grey_pressed">#ff555555</color>

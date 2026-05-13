@@ -33,6 +33,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".LogActivity"
+            android:exported="false"
+            android:label="@string/drawer_menu_log"
+            android:theme="@style/AppTheme.LogScreen" />
     </application>
 
 </manifest>
