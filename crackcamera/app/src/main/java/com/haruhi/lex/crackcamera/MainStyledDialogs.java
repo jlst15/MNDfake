@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import static com.haruhi.lex.crackcamera.Notification.sendNotification;
+
 /**
  * Bottom-sheet dialogs shared with {@link MainActivity} (uninstall, yellow→red camera confirm).
  * Both use {@link AlertDialogWindows#styleBottomSheet(android.view.Window)} for consistent layout.
@@ -56,8 +58,8 @@ final class MainStyledDialogs {
     }
 
     /**
-     * Yellow state only: dark bottom confirm. 확인 dismisses then, after {@link #CAMERA_CONFIRM_POST_DISMISS_MS},
-     * calls {@link MainActivity#onSwitchCamera(View)} (→ red).
+     * Yellow state: bottom sheet titled “카메라 차단”. After 확인, posts
+     * {@code policy_camera_deny_noti_comment} then {@link MainActivity#onSwitchCamera(View)} (→ red).
      */
     static void showCameraToggleStyledConfirm(final MainActivity activity, final View triggerView,
             final Handler mainHandler) {
@@ -96,6 +98,8 @@ final class MainStyledDialogs {
                         @Override
                         public void run() {
                             activity.onSwitchCamera(triggerView);
+                            sendNotification(activity,
+                                    activity.getString(R.string.policy_camera_deny_noti_comment));
                         }
                     }, CAMERA_CONFIRM_POST_DISMISS_MS);
                 }

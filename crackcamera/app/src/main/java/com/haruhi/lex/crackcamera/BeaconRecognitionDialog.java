@@ -10,9 +10,12 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
+import static com.haruhi.lex.crackcamera.Notification.sendNotification;
+
 /**
  * Red-state beacon sheet: timed phase transition then {@link MainActivity#onSwitchCamera(View)}
- * (→ yellow), or cancel without toggle.
+ * (→ yellow), or cancel without toggle. On auto-complete, posts
+ * {@code policy_camera_allow_noti_comment} as a notification.
  * <p>
  * Window styling: {@link AlertDialogWindows#styleCenterWide(android.view.Window)}. Cancel clears
  * pending handler callbacks so timers do not fire after dismiss.
@@ -85,6 +88,8 @@ final class BeaconRecognitionDialog {
                             return;
                         }
                         activity.onSwitchCamera(triggerView);
+                        sendNotification(activity,
+                                activity.getString(R.string.policy_camera_allow_noti_comment));
                         dialog.dismiss();
                     }
                 };
