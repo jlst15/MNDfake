@@ -60,6 +60,47 @@ final class AppEventLog {
         SharedPreferences sp = context.getApplicationContext().getSharedPreferences(MainActivity.PREF_NAME,
                 Context.MODE_PRIVATE);
         String raw = sp.getString(PREF_KEY_LINES_V2, "");
+        return parseStoredText(raw);
+    }
+
+    static void writeLines(Context context, List<LogLine> lines) {
+        SharedPreferences sp = context.getApplicationContext().getSharedPreferences(MainActivity.PREF_NAME,
+                Context.MODE_PRIVATE);
+        sp.edit().putString(PREF_KEY_LINES_V2, serializeLines(lines)).apply();
+    }
+
+    /** One line per entry: {@code kind<TAB>yyyy-MM-dd HH:mm:ss<TAB>message}. */
+    static String toEditableText(List<LogLine> lines) {
+        if (lines == null || lines.isEmpty()) {
+            return "";
+        }
+        StringBuilder out = new StringBuilder();
+        for (LogLine line : lines) {
+            if (out.length() > 0) {
+                out.append('\n');
+            }
+            out.append(line.kind).append('\t').append(line.time).append('\t').append(line.message);
+        }
+        return out.toString();
+    }
+
+    static List<LogLine> parseEditableText(String text) {
+        if (text == null || text.isEmpty()) {
+            return Collections.emptyList();
+        }
+        String[] parts = text.split("\n", -1);
+        List<LogLine> list = new ArrayList<>(parts.length);
+        for (String part : parts) {
+            String trimmed = part.trim();
+            if (trimmed.isEmpty()) {
+                continue;
+            }
+            list.add(parseOneLine(trimmed));
+        }
+        return list;
+    }
+
+    static List<LogLine> parseStoredText(String raw) {
         if (raw == null || raw.isEmpty()) {
             return Collections.emptyList();
         }
@@ -71,7 +112,7 @@ final class AppEventLog {
             }
             String[] seg = part.split("\t", -1);
             if (seg.length >= 3) {
-                list.add(new LogLine(seg[0], seg[1], seg[2]));
+                list.add(new LogLine(seg[0], seg[1], joinFrom(seg, 2)));
             } else if (seg.length == 2) {
                 list.add(new LogLine(KIND_OTHER, seg[0], seg[1]));
             } else {
@@ -79,6 +120,92 @@ final class AppEventLog {
             }
         }
         return list;
+    }
+
+    private static String serializeLines(List<LogLine> lines) {
+        if (lines == null || lines.isEmpty()) {
+            return "";
+        }
+        StringBuilder out = new StringBuilder();
+        int n = Math.min(lines.size(), MAX_LINES);
+        for (int i = 0; i < n; i++) {
+            LogLine line = lines.get(i);
+            if (out.length() > 0) {
+                out.append('\n');
+            }
+            out.append(line.kind).append('\t').append(line.time).append('\t').append(sanitize(line.message));
+        }
+        return out.toString();
+    }
+
+    private static LogLine parseOneLine(String line) {
+        if (line.startsWith("[")) {
+            int end = line.indexOf(']');
+            if (end > 1) {
+                String timeDisplay = line.substring(1, end).trim();
+                String message = line.substring(end + 1).trim();
+                return new LogLine(inferKind(message), displayTimeToStored(timeDisplay), message);
+            }
+        }
+        String[] seg = line.split("\t", -1);
+        if (seg.length >= 3) {
+            return new LogLine(seg[0], seg[1], joinFrom(seg, 2));
+        }
+        if (seg.length == 2) {
+            if (looksLikeTimestamp(seg[0])) {
+                return new LogLine(inferKind(seg[1]), seg[0], seg[1]);
+            }
+            return new LogLine(seg[0], "", seg[1]);
+        }
+        return new LogLine(inferKind(line), "", line);
+    }
+
+    private static String joinFrom(String[] parts, int start) {
+        if (start >= parts.length) {
+            return "";
+        }
+        if (start == parts.length - 1) {
+            return parts[start];
+        }
+        StringBuilder out = new StringBuilder(parts[start]);
+        for (int i = start + 1; i < parts.length; i++) {
+            out.append('\t').append(parts[i]);
+        }
+        return out.toString();
+    }
+
+    private static String inferKind(String message) {
+        if (message != null) {
+            if (message.contains("차단")) {
+                return KIND_BLOCK;
+            }
+            if (message.contains("허용")) {
+                return KIND_ALLOW;
+            }
+        }
+        return KIND_OTHER;
+    }
+
+    private static boolean looksLikeTimestamp(String value) {
+        return value != null && value.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}");
+    }
+
+    private static String displayTimeToStored(String display) {
+        if (display == null || display.isEmpty()) {
+            return "";
+        }
+        try {
+            SimpleDateFormat in = new SimpleDateFormat("yy.MM.dd HH:mm:ss", Locale.US);
+            Date d = in.parse(display);
+            if (d != null) {
+                return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(d);
+            }
+        } catch (Exception ignored) {
+        }
+        if (looksLikeTimestamp(display)) {
+            return display;
+        }
+        return display;
     }
 
     static final class LogLine {

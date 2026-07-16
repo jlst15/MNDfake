@@ -23,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.List;
@@ -36,7 +37,7 @@ import static com.haruhi.lex.crackcamera.Notification.sendNotification;
 /**
  * Primary screen: camera deny toggle, navigation drawer, NFC / uninstall /
  * beacon dialogs, and
- * hidden install-date flow.
+ * hidden install-date flow (long-press agent version at bottom).
  * <p>
  * Supporting types (same package, behavior unchanged):
  * <ul>
@@ -48,9 +49,9 @@ import static com.haruhi.lex.crackcamera.Notification.sendNotification;
  * gravity</li>
  * <li>{@link MainStyledDialogs} — uninstall sheet and yellow→red camera
  * confirmation sheet</li>
- * <li>{@link BeaconRecognitionDialog} — red-state beacon sheet; timings
- * {@link BeaconRecognitionDialog#PHASE1_MS},
- * {@link BeaconRecognitionDialog#AUTO_TOGGLE_MS}</li>
+ * <li>{@link BeaconRecognitionDialog} — red-state beacon sheet; NFC or auto timer per
+ * {@link MndfakePrefs#isBeaconNfcRequired}; phase {@link BeaconRecognitionDialog#PHASE1_MS},
+ * auto {@link BeaconRecognitionDialog#AUTO_TOGGLE_MS}</li>
  * <li>{@link MainCameraUi} — toolbar / header visuals driven by
  * {@link #onSwitchCamera(View)}</li>
  * </ul>
@@ -113,6 +114,14 @@ public class MainActivity extends AppCompatActivity {
         TextView tvAgentVersion = findViewById(R.id.tvAgentVersion);
         if (tvAgentVersion != null) {
             tvAgentVersion.setText(BuildConfig.VERSION_NAME);
+            tvAgentVersion.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    loadSetting();
+                    showInstallDatePicker();
+                    return true;
+                }
+            });
         }
         pruneOverlappedBottomToolbarRows();
         Button denyBtn = findViewById(R.id.btnCameraDeny);
@@ -135,10 +144,15 @@ public class MainActivity extends AppCompatActivity {
         }
         ImageView hiddenLogoTap = findViewById(R.id.ivUserState);
         if (hiddenLogoTap != null) {
-            hiddenLogoTap.setOnClickListener(new View.OnClickListener() {
+            hiddenLogoTap.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View v) {
-                    onClickMND(v);
+                public boolean onLongClick(View v) {
+                    boolean nfcRequired = MndfakePrefs.toggleBeaconNfcRequired(MainActivity.this);
+                    Toast.makeText(MainActivity.this,
+                            nfcRequired ? R.string.mnfake_beacon_nfc_required_on
+                                    : R.string.mnfake_beacon_nfc_required_off,
+                            Toast.LENGTH_SHORT).show();
+                    return true;
                 }
             });
         }
@@ -191,6 +205,13 @@ public class MainActivity extends AppCompatActivity {
                 maybeShowNfcOffBottomDialog();
             }
         }, NFC_OFF_DIALOG_SHOW_DELAY_MS);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        BeaconRecognitionDialog.dispatchNfcIntent(intent);
     }
 
     @Override
@@ -553,51 +574,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onClickMND(View view) {
-        ImageView logo = findViewById(R.id.ivUserState);
-        if (logo == null)
-            return;
-        loadSetting();
-        logo.setVisibility(View.GONE);
-        showInstallDatePicker();
-    }
-
-    private void restoreInstallSecretLogo() {
-        ImageView logo = findViewById(R.id.ivUserState);
-        if (logo != null) {
-            logo.setVisibility(View.VISIBLE);
-        }
-    }
-
     private void showInstallDatePicker() {
-        final boolean[] picked = new boolean[] { false };
         DatePickerDialog dialog = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(android.widget.DatePicker unused, int year, int month, int dayOfMonth) {
-                picked[0] = true;
                 pendingInstallYear = year;
                 pendingInstallMonth = month;
                 pendingInstallDay = dayOfMonth;
                 showInstallTimePicker();
             }
         }, startSets[0], startSets[1], startSets[2]);
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface unusedDialog) {
-                if (!picked[0]) {
-                    restoreInstallSecretLogo();
-                }
-            }
-        });
         dialog.show();
     }
 
     private void showInstallTimePicker() {
-        final boolean[] picked = new boolean[] { false };
         TimePickerDialog dialog = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(android.widget.TimePicker unused, int hourOfDay, int minute) {
-                picked[0] = true;
                 startSets[0] = pendingInstallYear;
                 startSets[1] = pendingInstallMonth;
                 startSets[2] = pendingInstallDay;
@@ -605,19 +598,10 @@ public class MainActivity extends AppCompatActivity {
                 startSets[4] = minute;
                 saveSetting();
                 updatePanel();
-                restoreInstallSecretLogo();
                 AppEventLog.append(MainActivity.this, AppEventLog.KIND_OTHER,
                         getString(R.string.mnfake_log_event_install_updated));
             }
         }, startSets[3], startSets[4], true);
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface unusedDialog) {
-                if (!picked[0]) {
-                    restoreInstallSecretLogo();
-                }
-            }
-        });
         dialog.show();
     }
 

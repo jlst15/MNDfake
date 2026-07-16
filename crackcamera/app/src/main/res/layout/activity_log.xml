@@ -30,6 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:padding="12dip"
             android:text="@string/drawer_menu_log"
             android:textColor="@android:color/white"
             android:textSize="20sp"
@@ -59,6 +60,72 @@
         android:paddingStart="5dip"
         android:paddingEnd="5dip"
         android:paddingBottom="10dip" />
+
+    <EditText
+        android:id="@+id/etLogEditor"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/mnfake_log_content"
+        android:gravity="top|start"
+        android:hint="@string/mnfake_log_edit_hint"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine|textNoSuggestions"
+        android:padding="12dip"
+        android:scrollbars="vertical"
+        android:textColor="@android:color/white"
+        android:textColorHint="@color/common_base_color_txt_gray"
+        android:textSize="14sp"
+        android:typeface="monospace"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dip"
+        android:layout_marginTop="8dip"
+        android:layout_marginEnd="16dip"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnLogEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/mnfake_btn_pill_grey"
+            android:minHeight="44dip"
+            android:text="@string/mnfake_log_edit"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btnLogSave"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="6dip"
+            android:layout_weight="1"
+            android:background="@drawable/mnfake_btn_pill_grey"
+            android:minHeight="44dip"
+            android:text="@string/mnfake_log_save"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnLogCancelEdit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dip"
+            android:layout_weight="1"
+            android:background="@drawable/mnfake_btn_pill_grey"
+            android:minHeight="44dip"
+            android:text="@string/mnfake_dialog_cancel"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:visibility="gone" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnLogClose"

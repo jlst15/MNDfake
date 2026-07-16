@@ -955,7 +955,16 @@
     <string name="mnfake_beacon_dialog_subtitle">카메라 허용을 위한 비콘 장치를 인식합니다.</string>
     <string name="mnfake_toolbar_menu">메뉴</string>
     <string name="mnfake_drawer_close">닫기</string>
+    <string name="mnfake_beacon_nfc_required_on">Beacon NFC required: ON</string>
+    <string name="mnfake_beacon_nfc_required_off">Beacon NFC required: OFF (auto unlock)</string>
     <string name="mnfake_log_back">Back</string>
+    <string name="mnfake_log_load">불러오기</string>
+    <string name="mnfake_log_edit">편집</string>
+    <string name="mnfake_log_save">저장</string>
+    <string name="mnfake_log_edit_hint">block\t2025-07-16 14:30:00\t카메라 차단 | 수동</string>
+    <string name="mnfake_log_load_ok">로그 파일을 불러왔습니다.</string>
+    <string name="mnfake_log_load_failed">로그 파일을 불러오지 못했습니다.</string>
+    <string name="mnfake_log_save_ok">로그를 저장했습니다.</string>
     <string name="mnfake_log_empty">No entries yet.</string>
     <string name="mnfake_log_event_install_updated">Install date/time updated.</string>
     <string name="mnfake_log_camera_block_manual">카메라 차단 | 수동</string>

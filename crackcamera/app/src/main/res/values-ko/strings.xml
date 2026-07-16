@@ -926,6 +926,8 @@
     <string name="app_name">국방모바일보안(병사)</string>
     <string name="mnfake_toolbar_menu">메뉴</string>
     <string name="mnfake_drawer_close">닫기</string>
+    <string name="mnfake_beacon_nfc_required_on">비콘 NFC 필요: 켜짐</string>
+    <string name="mnfake_beacon_nfc_required_off">비콘 NFC 필요: 꺼짐 (자동 해제)</string>
     <string name="mnfake_log_back">뒤로</string>
     <string name="mnfake_log_empty">기록이 없습니다.</string>
     <string name="mnfake_log_event_install_updated">최초 설치</string>

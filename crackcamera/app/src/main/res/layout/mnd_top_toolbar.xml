@@ -26,9 +26,8 @@
         android:layout_height="@dimen/mnd_toolbar_logo_height"
         android:layout_centerInParent="true"
         android:background="@drawable/img_common_mnsa_logo"
-        android:clickable="true"
-        android:focusable="true"
-        android:contentDescription="@null" />
+        android:contentDescription="@null"
+        android:longClickable="true" />
 
     <ImageButton
         android:id="@+id/btnDeleteApp"

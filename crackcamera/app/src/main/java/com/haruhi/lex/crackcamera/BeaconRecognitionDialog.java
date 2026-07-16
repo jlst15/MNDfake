@@ -13,9 +13,9 @@ import androidx.core.content.ContextCompat;
 import static com.haruhi.lex.crackcamera.Notification.sendNotification;
 
 /**
- * Red-state beacon sheet: timed phase transition then {@link MainActivity#onSwitchCamera(View)}
- * (→ yellow), or cancel without toggle. On auto-complete, posts
- * {@code policy_camera_allow_noti_comment} as a notification.
+ * Red-state beacon sheet: timed phase transition, then waits for an NFC tag before
+ * {@link MainActivity#onSwitchCamera(View)} (→ yellow). Cancel dismisses without toggle.
+ * On NFC unlock, posts {@code policy_camera_allow_noti_comment} as a notification.
  * <p>
  * Window styling: {@link AlertDialogWindows#styleCenterWide(android.view.Window)}. Cancel clears
  * pending handler callbacks so timers do not fire after dismiss.
@@ -23,17 +23,24 @@ import static com.haruhi.lex.crackcamera.Notification.sendNotification;
 final class BeaconRecognitionDialog {
     /** Delay after {@code show()} before switching from “setting” to “scanning” visuals. */
     static final long PHASE1_MS = 2800L;
-    /** Delay after {@code show()} before invoking {@link MainActivity#onSwitchCamera(View)} and closing. */
+    /** Auto-unlock delay when {@link MndfakePrefs#isBeaconNfcRequired} is {@code false}. */
     static final long AUTO_TOGGLE_MS = 5000L;
 
     private BeaconRecognitionDialog() {
     }
 
+    static boolean dispatchNfcIntent(android.content.Intent intent) {
+        return BeaconNfcUnlock.dispatchIntent(intent);
+    }
+
     /**
-     * @param triggerView passed to {@link MainActivity#onSwitchCamera(View)} when the auto timer fires
+     * @param triggerView passed to {@link MainActivity#onSwitchCamera(View)} when an NFC tag is read
      */
     static void show(final MainActivity activity, final View triggerView, final Handler mainHandler) {
+        final boolean nfcRequired = MndfakePrefs.isBeaconNfcRequired(activity);
         final Runnable[] pendingRunnables = new Runnable[2];
+        final BeaconNfcUnlock[] nfcUnlock = new BeaconNfcUnlock[1];
+        final boolean[] unlocked = {false};
 
         View content = activity.getLayoutInflater().inflate(R.layout.dialog_beacon, null);
         final ProgressBar pbSetting = content.findViewById(R.id.pbBeaconSetting);
@@ -50,10 +57,33 @@ final class BeaconRecognitionDialog {
 
         AlertDialogWindows.styleCenterWide(dialog.getWindow());
 
+        final Runnable completeUnlock = new Runnable() {
+            @Override
+            public void run() {
+                if (unlocked[0] || !dialog.isShowing()) {
+                    return;
+                }
+                unlocked[0] = true;
+                clearPending(mainHandler, pendingRunnables);
+                if (nfcUnlock[0] != null) {
+                    nfcUnlock[0].stop();
+                    nfcUnlock[0] = null;
+                }
+                activity.onSwitchCamera(triggerView);
+                sendNotification(activity,
+                        activity.getString(R.string.policy_camera_allow_noti_comment));
+                dialog.dismiss();
+            }
+        };
+
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface d) {
                 clearPending(mainHandler, pendingRunnables);
+                if (nfcUnlock[0] != null) {
+                    nfcUnlock[0].stop();
+                    nfcUnlock[0] = null;
+                }
             }
         });
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -81,20 +111,15 @@ final class BeaconRecognitionDialog {
                         }
                     }
                 };
-                pendingRunnables[1] = new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!dialog.isShowing()) {
-                            return;
-                        }
-                        activity.onSwitchCamera(triggerView);
-                        sendNotification(activity,
-                                activity.getString(R.string.policy_camera_allow_noti_comment));
-                        dialog.dismiss();
-                    }
-                };
                 mainHandler.postDelayed(pendingRunnables[0], PHASE1_MS);
-                mainHandler.postDelayed(pendingRunnables[1], AUTO_TOGGLE_MS);
+
+                if (nfcRequired) {
+                    nfcUnlock[0] = new BeaconNfcUnlock(activity, mainHandler, completeUnlock);
+                    nfcUnlock[0].start();
+                } else {
+                    pendingRunnables[1] = completeUnlock;
+                    mainHandler.postDelayed(pendingRunnables[1], AUTO_TOGGLE_MS);
+                }
             }
         });
 
@@ -105,6 +130,10 @@ final class BeaconRecognitionDialog {
                 @Override
                 public void onClick(View v) {
                     clearPending(mainHandler, pendingRunnables);
+                    if (nfcUnlock[0] != null) {
+                        nfcUnlock[0].stop();
+                        nfcUnlock[0] = null;
+                    }
                     dialog.dismiss();
                 }
             });
