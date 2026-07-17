@@ -11,18 +11,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/mnfake_log_top_bar"
-        android:padding="8dip">
+        android:paddingStart="4dip"
+        android:paddingTop="2dip"
+        android:paddingEnd="4dip"
+        android:paddingBottom="2dip">
 
         <ImageButton
             android:id="@+id/btnLogBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginStart="5dip"
+            android:layout_marginStart="2dip"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/mnfake_log_back"
-            android:padding="8dip"
+            android:padding="6dip"
+            android:scaleType="fitCenter"
             android:src="@drawable/abc_ic_ab_back_material" />
 
         <TextView
@@ -30,7 +34,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:padding="12dip"
+            android:paddingStart="8dip"
+            android:paddingTop="6dip"
+            android:paddingEnd="8dip"
+            android:paddingBottom="6dip"
             android:text="@string/drawer_menu_log"
             android:textColor="@android:color/white"
             android:textSize="20sp"
