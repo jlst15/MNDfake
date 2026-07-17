@@ -11,8 +11,10 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Persisted event list for {@link LogActivity}. Lines use {@code kind\ttimestamp\tmessage}
- * ({@link #PREF_KEY_LINES_V2}) so rows can style “카메라 차단” entries like the original app.
+ * Persisted event list for {@link LogActivity}. Lines use
+ * {@code kind\ttimestamp\tmessage[\tversion]} ({@link #PREF_KEY_LINES_V2}) so rows can style
+ * “카메라 차단” entries like the original app. {@code version} is optional and overrides the
+ * app version shown in the log-item footer.
  */
 final class AppEventLog {
     /** {@code block} = brown row (차단); {@code allow} = 허용; {@code other} = install etc. */
@@ -34,7 +36,7 @@ final class AppEventLog {
         Context app = context.getApplicationContext();
         SharedPreferences sp = app.getSharedPreferences(MainActivity.PREF_NAME, Context.MODE_PRIVATE);
         String ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-        String line = k + "\t" + ts + "\t" + sanitize(message);
+        String line = k + "\t" + ts + "\t" + sanitize(message) + "\t" + sanitize(BuildConfig.VERSION_NAME);
         String existing = sp.getString(PREF_KEY_LINES_V2, "");
         String combined = line + "\n" + existing;
         String[] parts = combined.split("\n", -1);
@@ -53,6 +55,9 @@ final class AppEventLog {
     }
 
     private static String sanitize(String message) {
+        if (message == null) {
+            return "";
+        }
         return message.replace('\t', ' ').replace('\n', ' ').replace('\r', ' ');
     }
 
@@ -69,7 +74,10 @@ final class AppEventLog {
         sp.edit().putString(PREF_KEY_LINES_V2, serializeLines(lines)).apply();
     }
 
-    /** One line per entry: {@code kind<TAB>yyyy-MM-dd HH:mm:ss<TAB>message}. */
+    /**
+     * One line per entry: {@code kind<TAB>yyyy-MM-dd HH:mm:ss<TAB>message[<TAB>version]}.
+     * Version is always written so editors can change the footer app version.
+     */
     static String toEditableText(List<LogLine> lines) {
         if (lines == null || lines.isEmpty()) {
             return "";
@@ -79,7 +87,8 @@ final class AppEventLog {
             if (out.length() > 0) {
                 out.append('\n');
             }
-            out.append(line.kind).append('\t').append(line.time).append('\t').append(line.message);
+            out.append(line.kind).append('\t').append(line.time).append('\t').append(line.message)
+                    .append('\t').append(line.displayVersion());
         }
         return out.toString();
     }
@@ -110,14 +119,7 @@ final class AppEventLog {
             if (part.isEmpty()) {
                 continue;
             }
-            String[] seg = part.split("\t", -1);
-            if (seg.length >= 3) {
-                list.add(new LogLine(seg[0], seg[1], joinFrom(seg, 2)));
-            } else if (seg.length == 2) {
-                list.add(new LogLine(KIND_OTHER, seg[0], seg[1]));
-            } else {
-                list.add(new LogLine(KIND_OTHER, "", part));
-            }
+            list.add(parseTabFields(part.split("\t", -1), part));
         }
         return list;
     }
@@ -134,6 +136,9 @@ final class AppEventLog {
                 out.append('\n');
             }
             out.append(line.kind).append('\t').append(line.time).append('\t').append(sanitize(line.message));
+            if (line.version != null && !line.version.isEmpty()) {
+                out.append('\t').append(sanitize(line.version));
+            }
         }
         return out.toString();
     }
@@ -143,21 +148,45 @@ final class AppEventLog {
             int end = line.indexOf(']');
             if (end > 1) {
                 String timeDisplay = line.substring(1, end).trim();
-                String message = line.substring(end + 1).trim();
-                return new LogLine(inferKind(message), displayTimeToStored(timeDisplay), message);
+                String rest = line.substring(end + 1).trim();
+                String message = rest;
+                String version = "";
+                // Optional " | version" or tab-separated version after the message.
+                int tab = rest.lastIndexOf('\t');
+                if (tab >= 0) {
+                    message = rest.substring(0, tab).trim();
+                    version = rest.substring(tab + 1).trim();
+                } else {
+                    int pipe = rest.lastIndexOf(" | ");
+                    if (pipe >= 0) {
+                        String maybeVersion = rest.substring(pipe + 3).trim();
+                        // Only treat as version when it looks like an app version, not message text.
+                        if (looksLikeVersion(maybeVersion)) {
+                            message = rest.substring(0, pipe).trim();
+                            version = maybeVersion;
+                        }
+                    }
+                }
+                return new LogLine(inferKind(message), displayTimeToStored(timeDisplay), message, version);
             }
         }
-        String[] seg = line.split("\t", -1);
-        if (seg.length >= 3) {
-            return new LogLine(seg[0], seg[1], joinFrom(seg, 2));
+        return parseTabFields(line.split("\t", -1), line);
+    }
+
+    private static LogLine parseTabFields(String[] seg, String rawFallback) {
+        if (seg.length >= 4) {
+            return new LogLine(seg[0], seg[1], seg[2], joinFrom(seg, 3));
+        }
+        if (seg.length == 3) {
+            return new LogLine(seg[0], seg[1], seg[2], "");
         }
         if (seg.length == 2) {
             if (looksLikeTimestamp(seg[0])) {
-                return new LogLine(inferKind(seg[1]), seg[0], seg[1]);
+                return new LogLine(inferKind(seg[1]), seg[0], seg[1], "");
             }
-            return new LogLine(seg[0], "", seg[1]);
+            return new LogLine(seg[0], "", seg[1], "");
         }
-        return new LogLine(inferKind(line), "", line);
+        return new LogLine(inferKind(rawFallback), "", rawFallback, "");
     }
 
     private static String joinFrom(String[] parts, int start) {
@@ -190,6 +219,10 @@ final class AppEventLog {
         return value != null && value.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}");
     }
 
+    private static boolean looksLikeVersion(String value) {
+        return value != null && value.matches("\\d+(?:\\.\\d+)+.*");
+    }
+
     private static String displayTimeToStored(String display) {
         if (display == null || display.isEmpty()) {
             return "";
@@ -212,11 +245,22 @@ final class AppEventLog {
         final String kind;
         final String time;
         final String message;
+        /** Optional app version override for the log-item footer; empty uses {@link BuildConfig#VERSION_NAME}. */
+        final String version;
 
         LogLine(String kind, String time, String message) {
+            this(kind, time, message, "");
+        }
+
+        LogLine(String kind, String time, String message, String version) {
             this.kind = kind != null ? kind : KIND_OTHER;
             this.time = time != null ? time : "";
             this.message = message != null ? message : "";
+            this.version = version != null ? version : "";
+        }
+
+        String displayVersion() {
+            return version.isEmpty() ? BuildConfig.VERSION_NAME : version;
         }
 
         boolean isBlock() {
