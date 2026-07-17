@@ -647,11 +647,15 @@ public class MainActivity extends AppCompatActivity {
      *             synthetic calls
      */
     public void onSwitchCamera(View view) {
+        // Refresh lock anchor before painting so the yellow branch copies "now" into endSets
+        // (previously endSets lagged by one toggle because suspendDate was updated after the copy).
+        if (init_screen) {
+            suspendDate = Calendar.getInstance();
+        }
         MainCameraUi.applyToggleVisuals(this);
         final boolean drawerMenuYellow = suspended;
         if (init_screen) {
             boolean wasYellow = suspended;
-            suspendDate = Calendar.getInstance();
             suspended = !suspended;
             if (wasYellow && !suspended) {
                 vibrateLongYellowToRed();
