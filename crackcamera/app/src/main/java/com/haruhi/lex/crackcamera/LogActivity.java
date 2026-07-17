@@ -204,13 +204,7 @@ public class LogActivity extends AppCompatActivity {
         }
         if (etLogEditor != null) {
             etLogEditor.setVisibility(View.VISIBLE);
-            // Load current logs into editor
-            List<AppEventLog.LogLine> lines = AppEventLog.readLines(this);
-            StringBuilder sb = new StringBuilder();
-            for (AppEventLog.LogLine line : lines) {
-                sb.append(line.kind).append("\t").append(line.time).append("\t").append(line.message).append("\n");
-            }
-            etLogEditor.setText(sb.toString());
+            etLogEditor.setText(AppEventLog.toEditableText(AppEventLog.readLines(this)));
         }
         if (btnLogEdit != null) {
             btnLogEdit.setVisibility(View.GONE);
@@ -244,25 +238,12 @@ public class LogActivity extends AppCompatActivity {
     }
 
     private void saveLogChanges() {
-        if (etLogEditor == null) return;
-
-        String content = etLogEditor.getText().toString().trim();
-        if (content.isEmpty()) return;
-
-        // Parse and save the edited log entries
-        String[] lines = content.split("\n");
-        for (String line : lines) {
-            if (line.isEmpty()) continue;
-            String[] parts = line.split("\t", -1);
-            if (parts.length >= 3) {
-                String kind = parts[0];
-                String time = parts[1];
-                String message = parts[2];
-                AppEventLog.append(this, kind, time + "\t" + message);
-            }
+        if (etLogEditor == null) {
+            return;
         }
-
-        // Refresh and exit edit mode
+        List<AppEventLog.LogLine> lines = AppEventLog.parseEditableText(etLogEditor.getText().toString());
+        AppEventLog.writeLines(this, lines);
+        toast(R.string.mnfake_log_save_ok);
         exitEditMode();
     }
 
@@ -347,7 +328,7 @@ public class LogActivity extends AppCompatActivity {
             LinearLayout root = row.findViewById(R.id.llLogRowRoot);
 
             String release = Build.VERSION.RELEASE != null ? Build.VERSION.RELEASE : "";
-            String footer = "Android " + release + " | " + BuildConfig.VERSION_NAME;
+            String footer = "Android " + release + " | " + line.displayVersion();
 
             if (tvTime != null) {
                 tvTime.setText(bracketedTimeForDisplay(line.time));
