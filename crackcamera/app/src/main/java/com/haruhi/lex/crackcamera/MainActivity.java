@@ -108,6 +108,11 @@ public class MainActivity extends AppCompatActivity {
     private int pendingInstallYear;
     private int pendingInstallMonth;
     private int pendingInstallDay;
+    private int pendingBlockYear;
+    private int pendingBlockMonth;
+    private int pendingBlockDay;
+    /** Matches painted toolbar/header mode (yellow blocked vs red allow), not post-flip {@link #suspended}. */
+    private boolean blockedUiVisible;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -485,12 +490,16 @@ public class MainActivity extends AppCompatActivity {
             HiddenLongPress.attach(topDeleteBtn, new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    boolean secure = MndfakePrefs.toggleFlagSecure(MainActivity.this);
-                    applyFlagSecureFromPrefs();
-                    Toast.makeText(MainActivity.this,
-                            secure ? R.string.mnfake_flag_secure_on
-                                    : R.string.mnfake_flag_secure_off,
-                            Toast.LENGTH_SHORT).show();
+                    if (blockedUiVisible) {
+                        showBlockDatePicker();
+                    } else {
+                        boolean secure = MndfakePrefs.toggleFlagSecure(MainActivity.this);
+                        applyFlagSecureFromPrefs();
+                        Toast.makeText(MainActivity.this,
+                                secure ? R.string.mnfake_flag_secure_on
+                                        : R.string.mnfake_flag_secure_off,
+                                Toast.LENGTH_SHORT).show();
+                    }
                     return true;
                 }
             });
@@ -628,6 +637,39 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    private void showBlockDatePicker() {
+        DatePickerDialog dialog = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(android.widget.DatePicker unused, int year, int month, int dayOfMonth) {
+                pendingBlockYear = year;
+                pendingBlockMonth = month;
+                pendingBlockDay = dayOfMonth;
+                showBlockTimePicker();
+            }
+        }, endSets[0], endSets[1], endSets[2]);
+        dialog.show();
+    }
+
+    private void showBlockTimePicker() {
+        TimePickerDialog dialog = new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(android.widget.TimePicker unused, int hourOfDay, int minute) {
+                endSets[0] = pendingBlockYear;
+                endSets[1] = pendingBlockMonth;
+                endSets[2] = pendingBlockDay;
+                endSets[3] = hourOfDay;
+                endSets[4] = minute;
+                endSets[5] = 0;
+                suspendDate.set(endSets[0], endSets[1], endSets[2], endSets[3], endSets[4], endSets[5]);
+                saveSetting();
+                updatePanel();
+                AppEventLog.append(MainActivity.this, AppEventLog.KIND_OTHER,
+                        getString(R.string.mnfake_log_event_block_updated));
+            }
+        }, endSets[3], endSets[4], true);
+        dialog.show();
+    }
+
     /**
      * Applies camera blocked vs allowed UI and optionally flips {@link #suspended}
      * when
@@ -654,6 +696,7 @@ public class MainActivity extends AppCompatActivity {
         }
         MainCameraUi.applyToggleVisuals(this);
         final boolean drawerMenuYellow = suspended;
+        blockedUiVisible = drawerMenuYellow;
         if (init_screen) {
             boolean wasYellow = suspended;
             suspended = !suspended;
