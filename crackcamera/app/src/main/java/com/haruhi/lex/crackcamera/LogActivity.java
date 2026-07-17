@@ -82,12 +82,12 @@ public class LogActivity extends AppCompatActivity {
         }
         if (btnLogClose != null) {
             btnLogClose.setOnClickListener(close);
-            btnLogClose.setOnLongClickListener(editMode);
+            HiddenLongPress.attach(btnLogClose, editMode);
         }
 
         TextView tvLogTitle = findViewById(R.id.tvLogTitle);
         if (tvLogTitle != null) {
-            tvLogTitle.setOnLongClickListener(new View.OnLongClickListener() {
+            HiddenLongPress.attach(tvLogTitle, new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     openLogFilePicker();

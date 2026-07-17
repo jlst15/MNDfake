@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         TextView tvAgentVersion = findViewById(R.id.tvAgentVersion);
         if (tvAgentVersion != null) {
             tvAgentVersion.setText(BuildConfig.VERSION_NAME);
-            tvAgentVersion.setOnLongClickListener(new View.OnLongClickListener() {
+            HiddenLongPress.attach(tvAgentVersion, new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     loadSetting();
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         }
         ImageView hiddenLogoTap = findViewById(R.id.ivUserState);
         if (hiddenLogoTap != null) {
-            hiddenLogoTap.setOnLongClickListener(new View.OnLongClickListener() {
+            HiddenLongPress.attach(hiddenLogoTap, new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     boolean nfcRequired = MndfakePrefs.toggleBeaconNfcRequired(MainActivity.this);
