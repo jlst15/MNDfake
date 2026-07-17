@@ -21,14 +21,16 @@ final class HiddenLongPress {
         if (view == null || listener == null) {
             return;
         }
-        view.setLongClickable(true);
+        final View target = view;
+        final View.OnLongClickListener longClickListener = listener;
+        target.setLongClickable(true);
         // Disable the framework long-click timeout; only our delayed handler should fire.
-        view.setOnLongClickListener(null);
+        target.setOnLongClickListener(null);
 
         final Handler handler = new Handler(Looper.getMainLooper());
-        final int touchSlop = ViewConfiguration.get(view.getContext()).getScaledTouchSlop();
+        final int touchSlop = ViewConfiguration.get(target.getContext()).getScaledTouchSlop();
 
-        view.setOnTouchListener(new View.OnTouchListener() {
+        target.setOnTouchListener(new View.OnTouchListener() {
             private boolean longPressFired;
             private float downX;
             private float downY;
@@ -36,7 +38,7 @@ final class HiddenLongPress {
                 @Override
                 public void run() {
                     longPressFired = true;
-                    listener.onLongClick(view);
+                    longClickListener.onLongClick(target);
                 }
             };
 
