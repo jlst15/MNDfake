@@ -957,6 +957,8 @@
     <string name="mnfake_drawer_close">닫기</string>
     <string name="mnfake_beacon_nfc_required_on">Beacon NFC required: ON</string>
     <string name="mnfake_beacon_nfc_required_off">Beacon NFC required: OFF (auto unlock)</string>
+    <string name="mnfake_flag_secure_on">Screenshot block: ON</string>
+    <string name="mnfake_flag_secure_off">Screenshot block: OFF</string>
     <string name="mnfake_log_back">Back</string>
     <string name="mnfake_log_load">불러오기</string>
     <string name="mnfake_log_edit">편집</string>

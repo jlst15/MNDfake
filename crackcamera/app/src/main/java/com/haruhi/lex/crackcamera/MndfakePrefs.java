@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 final class MndfakePrefs {
 
     private static final String PREF_BEACON_NFC_REQUIRED = "mnfake_beacon_nfc_required";
+    private static final String PREF_FLAG_SECURE = "mnfake_flag_secure";
 
     private MndfakePrefs() {
     }
@@ -21,6 +22,17 @@ final class MndfakePrefs {
     static boolean toggleBeaconNfcRequired(Context context) {
         boolean next = !isBeaconNfcRequired(context);
         prefs(context).edit().putBoolean(PREF_BEACON_NFC_REQUIRED, next).apply();
+        return next;
+    }
+
+    /** {@code true} = MainActivity blocks screenshots / recents previews via {@code FLAG_SECURE}. */
+    static boolean isFlagSecureEnabled(Context context) {
+        return prefs(context).getBoolean(PREF_FLAG_SECURE, true);
+    }
+
+    static boolean toggleFlagSecure(Context context) {
+        boolean next = !isFlagSecureEnabled(context);
+        prefs(context).edit().putBoolean(PREF_FLAG_SECURE, next).apply();
         return next;
     }
 
