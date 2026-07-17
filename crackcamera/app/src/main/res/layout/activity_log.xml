@@ -27,7 +27,8 @@
             android:contentDescription="@string/mnfake_log_back"
             android:padding="6dip"
             android:scaleType="fitCenter"
-            android:src="@drawable/abc_ic_ab_back_material" />
+            android:src="@drawable/mnfake_ic_log_back"
+            android:tint="@android:color/white" />
 
         <TextView
             android:id="@+id/tvLogTitle"
