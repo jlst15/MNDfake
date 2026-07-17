@@ -1,5 +1,7 @@
 package com.haruhi.lex.crackcamera;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +14,12 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,6 +34,8 @@ import androidx.appcompat.app.AppCompatActivity;
  * {@code originalSource/res/values/public.xml} (layout binaries are not in this tree).
  */
 public class LogActivity extends AppCompatActivity {
+
+    private static final int REQUEST_OPEN_LOG_FILE = 1001;
 
     private EditText etLogEditor;
     private Button btnLogEdit;
@@ -76,6 +85,17 @@ public class LogActivity extends AppCompatActivity {
             btnLogClose.setOnLongClickListener(editMode);
         }
 
+        TextView tvLogTitle = findViewById(R.id.tvLogTitle);
+        if (tvLogTitle != null) {
+            tvLogTitle.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    openLogFilePicker();
+                    return true;
+                }
+            });
+        }
+
         if (btnLogSave != null) {
             btnLogSave.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -93,6 +113,88 @@ public class LogActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != REQUEST_OPEN_LOG_FILE || resultCode != RESULT_OK || data == null) {
+            return;
+        }
+        Uri uri = data.getData();
+        if (uri == null) {
+            toast(R.string.mnfake_log_load_failed);
+            return;
+        }
+        loadLogFromUri(uri);
+    }
+
+    private void openLogFilePicker() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("text/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        Intent chooser = Intent.createChooser(intent, getString(R.string.mnfake_log_load));
+        try {
+            startActivityForResult(chooser, REQUEST_OPEN_LOG_FILE);
+        } catch (Exception e) {
+            toast(R.string.mnfake_log_load_failed);
+        }
+    }
+
+    private void loadLogFromUri(Uri uri) {
+        String text = readTextFromUri(uri);
+        if (text == null) {
+            toast(R.string.mnfake_log_load_failed);
+            return;
+        }
+        List<AppEventLog.LogLine> lines = AppEventLog.parseEditableText(text);
+        AppEventLog.writeLines(this, lines);
+        toast(R.string.mnfake_log_load_ok);
+        if (isEditMode && etLogEditor != null) {
+            etLogEditor.setText(AppEventLog.toEditableText(lines));
+        } else {
+            refreshLogList();
+        }
+    }
+
+    private String readTextFromUri(Uri uri) {
+        InputStream inputStream = null;
+        BufferedReader reader = null;
+        try {
+            inputStream = getContentResolver().openInputStream(uri);
+            if (inputStream == null) {
+                return null;
+            }
+            reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            StringBuilder out = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (out.length() > 0) {
+                    out.append('\n');
+                }
+                out.append(line);
+            }
+            return out.toString();
+        } catch (IOException e) {
+            return null;
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException ignored) {
+                }
+            }
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
+    }
+
+    private void toast(int resId) {
+        Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
     }
 
     private void enterEditMode() {
@@ -138,6 +240,7 @@ public class LogActivity extends AppCompatActivity {
         if (btnLogCancelEdit != null) {
             btnLogCancelEdit.setVisibility(View.GONE);
         }
+        refreshLogList();
     }
 
     private void saveLogChanges() {
@@ -160,19 +263,23 @@ public class LogActivity extends AppCompatActivity {
         }
 
         // Refresh and exit edit mode
-        onResume();
         exitEditMode();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if (!isEditMode) {
+            refreshLogList();
+        }
+    }
+
+    private void refreshLogList() {
         List<AppEventLog.LogLine> lines = AppEventLog.readLines(this);
         TextView empty = findViewById(R.id.tvLogEmpty);
         if (empty != null) {
             empty.setVisibility(lines.isEmpty() ? View.VISIBLE : View.GONE);
         }
-        ListView lvLog = findViewById(R.id.lvLog);
         if (lvLog != null) {
             if (lvLog.getAdapter() instanceof LogListAdapter) {
                 ((LogListAdapter) lvLog.getAdapter()).setLines(lines);
