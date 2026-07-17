@@ -65,3 +65,6 @@ fastlane/readme.md
 
 # original reference files
 originalSource/
+
+# VSCode configuration files
+.vscode

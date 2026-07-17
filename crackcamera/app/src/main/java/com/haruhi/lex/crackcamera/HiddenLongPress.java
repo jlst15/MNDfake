@@ -16,7 +16,7 @@ import android.view.ViewConfiguration;
  */
 final class HiddenLongPress {
     /** Hold duration before a hidden long-press action fires. */
-    static final int DURATION_MS = 3000;
+    static final int DURATION_MS = 2500;
 
     private HiddenLongPress() {
     }
