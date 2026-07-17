@@ -17,6 +17,7 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -37,7 +38,8 @@ import static com.haruhi.lex.crackcamera.Notification.sendNotification;
 /**
  * Primary screen: camera deny toggle, navigation drawer, NFC / uninstall /
  * beacon dialogs, and
- * hidden install-date flow (long-press agent version at bottom).
+ * hidden install-date flow (long-press agent version at bottom) and
+ * screenshot-block toggle (long-press toolbar delete).
  * <p>
  * Supporting types (same package, behavior unchanged):
  * <ul>
@@ -110,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        applyFlagSecureFromPrefs();
         setContentView(R.layout.activity_main);
         TextView tvAgentVersion = findViewById(R.id.tvAgentVersion);
         if (tvAgentVersion != null) {
@@ -479,6 +482,18 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+            HiddenLongPress.attach(topDeleteBtn, new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    boolean secure = MndfakePrefs.toggleFlagSecure(MainActivity.this);
+                    applyFlagSecureFromPrefs();
+                    Toast.makeText(MainActivity.this,
+                            secure ? R.string.mnfake_flag_secure_on
+                                    : R.string.mnfake_flag_secure_off,
+                            Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
         }
         View drawerRoot = findViewById(R.id.left_drawer);
         wireDrawerChrome(drawerLayout, drawerRoot, R.id.btnClose, R.id.btnDelete);
@@ -512,6 +527,14 @@ public class MainActivity extends AppCompatActivity {
                     showUninstallConfirmDialog();
                 }
             });
+        }
+    }
+
+    private void applyFlagSecureFromPrefs() {
+        if (MndfakePrefs.isFlagSecureEnabled(this)) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
     }
 
