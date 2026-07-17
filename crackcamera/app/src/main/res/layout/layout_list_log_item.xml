@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingStart="12dip"
-    android:paddingTop="10dip"
+    android:paddingTop="7dip"
     android:paddingEnd="12dip"
     android:paddingBottom="10dip">
 
