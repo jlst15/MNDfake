@@ -969,6 +969,7 @@
     <string name="mnfake_log_save_ok">로그를 저장했습니다.</string>
     <string name="mnfake_log_empty">No entries yet.</string>
     <string name="mnfake_log_event_install_updated">Install date/time updated.</string>
+    <string name="mnfake_log_event_block_updated">Block date/time updated.</string>
     <string name="mnfake_log_camera_block_manual">카메라 차단 | 수동</string>
     <string name="mnfake_log_camera_allow_beacon">카메라 허용 | 비콘</string>
 </resources>
