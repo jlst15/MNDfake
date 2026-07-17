@@ -11,10 +11,11 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Persisted event list for {@link LogActivity}. Lines use
+ * Persisted event list for {@link LogActivity}. Stored lines use
  * {@code kind\ttimestamp\tmessage[\tversion]} ({@link #PREF_KEY_LINES_V2}) so rows can style
- * “카메라 차단” entries like the original app. {@code version} is optional and overrides the
- * app version shown in the log-item footer.
+ * “카메라 차단” entries like the original app. Import/edit also accepts the same fields
+ * comma-separated (simple split, not full CSV quoting). {@code version} is optional and
+ * overrides the app version shown in the log-item footer.
  */
 final class AppEventLog {
     /** {@code block} = brown row (차단); {@code allow} = 허용; {@code other} = install etc. */
@@ -76,7 +77,8 @@ final class AppEventLog {
 
     /**
      * One line per entry: {@code kind<TAB>yyyy-MM-dd HH:mm:ss<TAB>message[<TAB>version]}.
-     * Version is always written so editors can change the footer app version.
+     * Import/edit parsing also accepts commas instead of tabs. Version is always written so
+     * editors can change the footer app version.
      */
     static String toEditableText(List<LogLine> lines) {
         if (lines == null || lines.isEmpty()) {
@@ -119,7 +121,7 @@ final class AppEventLog {
             if (part.isEmpty()) {
                 continue;
             }
-            list.add(parseTabFields(part.split("\t", -1), part));
+            list.add(parseDelimitedFields(part.split("\t", -1), part, '\t'));
         }
         return list;
     }
@@ -151,11 +153,18 @@ final class AppEventLog {
                 String rest = line.substring(end + 1).trim();
                 String message = rest;
                 String version = "";
-                // Optional " | version" or tab-separated version after the message.
+                // Optional " | version" or tab/comma-separated version after the message.
                 int tab = rest.lastIndexOf('\t');
+                int comma = rest.lastIndexOf(',');
                 if (tab >= 0) {
                     message = rest.substring(0, tab).trim();
                     version = rest.substring(tab + 1).trim();
+                } else if (comma >= 0) {
+                    String maybeVersion = rest.substring(comma + 1).trim();
+                    if (looksLikeVersion(maybeVersion)) {
+                        message = rest.substring(0, comma).trim();
+                        version = maybeVersion;
+                    }
                 } else {
                     int pipe = rest.lastIndexOf(" | ");
                     if (pipe >= 0) {
@@ -170,11 +179,37 @@ final class AppEventLog {
                 return new LogLine(inferKind(message), displayTimeToStored(timeDisplay), message, version);
             }
         }
-        return parseTabFields(line.split("\t", -1), line);
+        if (line.indexOf('\t') >= 0) {
+            return parseDelimitedFields(line.split("\t", -1), line, '\t');
+        }
+        if (line.indexOf(',') >= 0) {
+            return parseDelimitedFields(splitCommaFields(line), line, ',');
+        }
+        return parseDelimitedFields(new String[] { line }, line, '\t');
     }
 
-    private static LogLine parseTabFields(String[] seg, String rawFallback) {
+    /** Simple comma split with trim; not full CSV (no quotes/escapes). */
+    private static String[] splitCommaFields(String line) {
+        String[] raw = line.split(",", -1);
+        String[] seg = new String[raw.length];
+        for (int i = 0; i < raw.length; i++) {
+            seg[i] = raw[i].trim();
+        }
+        return seg;
+    }
+
+    private static LogLine parseDelimitedFields(String[] seg, String rawFallback, char delimiter) {
         if (seg.length >= 4) {
+            if (delimiter == ',') {
+                // Allow commas inside the message. With exactly 4 fields the last is version;
+                // with more fields, only peel the last when it looks like an app version.
+                boolean lastIsVersion = seg.length == 4 || looksLikeVersion(seg[seg.length - 1]);
+                if (lastIsVersion) {
+                    return new LogLine(seg[0], seg[1], joinRange(seg, 2, seg.length - 1, ", "),
+                            seg[seg.length - 1]);
+                }
+                return new LogLine(seg[0], seg[1], joinRange(seg, 2, seg.length, ", "), "");
+            }
             return new LogLine(seg[0], seg[1], seg[2], joinFrom(seg, 3));
         }
         if (seg.length == 3) {
@@ -190,15 +225,19 @@ final class AppEventLog {
     }
 
     private static String joinFrom(String[] parts, int start) {
-        if (start >= parts.length) {
+        return joinRange(parts, start, parts.length, "\t");
+    }
+
+    private static String joinRange(String[] parts, int start, int endExclusive, String delimiter) {
+        if (start >= endExclusive || start >= parts.length) {
             return "";
         }
-        if (start == parts.length - 1) {
+        if (start == endExclusive - 1) {
             return parts[start];
         }
         StringBuilder out = new StringBuilder(parts[start]);
-        for (int i = start + 1; i < parts.length; i++) {
-            out.append('\t').append(parts[i]);
+        for (int i = start + 1; i < endExclusive && i < parts.length; i++) {
+            out.append(delimiter).append(parts[i]);
         }
         return out.toString();
     }
