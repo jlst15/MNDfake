@@ -52,6 +52,7 @@ public class LogActivity extends AppCompatActivity {
         // Log screen stays screenshottable even when MainActivity uses FLAG_SECURE.
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_log);
+        RecentsTaskIcon.apply(this);
 
         etLogEditor = findViewById(R.id.etLogEditor);
         btnLogEdit = findViewById(R.id.btnLogEdit);
