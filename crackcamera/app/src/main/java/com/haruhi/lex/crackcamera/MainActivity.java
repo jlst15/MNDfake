@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         applyFlagSecureFromPrefs();
         setContentView(R.layout.activity_main);
+        RecentsTaskIcon.apply(this);
         TextView tvAgentVersion = findViewById(R.id.tvAgentVersion);
         if (tvAgentVersion != null) {
             tvAgentVersion.setText(BuildConfig.VERSION_NAME);
