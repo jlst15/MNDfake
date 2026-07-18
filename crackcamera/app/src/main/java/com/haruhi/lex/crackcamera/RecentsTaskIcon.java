@@ -30,15 +30,7 @@ final class RecentsTaskIcon {
             return;
         }
         String label = activity.getString(R.string.app_name);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            activity.setTaskDescription(new ActivityManager.TaskDescription.Builder()
-                    .setLabel(label)
-                    .setIcon(icon)
-                    .setPrimaryColor(BACKGROUND_COLOR)
-                    .build());
-        } else {
-            activity.setTaskDescription(new ActivityManager.TaskDescription(label, icon, BACKGROUND_COLOR));
-        }
+        activity.setTaskDescription(new ActivityManager.TaskDescription(label, icon, BACKGROUND_COLOR));
     }
 
     private static Bitmap createIcon(Activity activity) {
