@@ -254,6 +254,7 @@ public class LogActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        RecentsTaskIcon.apply(this);
         if (!isEditMode) {
             refreshLogList();
         }

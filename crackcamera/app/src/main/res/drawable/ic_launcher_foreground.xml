@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Insets shrink art into the adaptive-icon safe zone; raise dp if the mask still clips. -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:left="31dp"
-        android:top="31dp"
-        android:right="31dp"
-        android:bottom="31dp">
-        <bitmap
-            android:gravity="fill"
-            android:src="@drawable/mnfake_launcher_icon_art" />
-    </item>
-</layer-list>
+<!-- Art already includes safe-zone padding; avoid extra insets (OneUI Recents uses this too). -->
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="fill"
+    android:src="@drawable/mnfake_launcher_icon_art" />
