@@ -2,10 +2,10 @@
 <!-- Insets shrink art into the adaptive-icon safe zone; raise dp if the mask still clips. -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:left="21dp"
-        android:top="21dp"
-        android:right="21dp"
-        android:bottom="21dp">
+        android:left="31dp"
+        android:top="31dp"
+        android:right="31dp"
+        android:bottom="31dp">
         <bitmap
             android:gravity="fill"
             android:src="@drawable/mnfake_launcher_icon_art" />
