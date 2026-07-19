@@ -578,6 +578,11 @@ public class MainActivity extends AppCompatActivity {
         if (lvDrawerMenu == null) {
             return;
         }
+        View deleteFooter = findViewById(R.id.btnDelete);
+        if (deleteFooter != null) {
+            // Locked (yellow): hide drawer "국방모바일보안앱 삭제"; allow (red): show it.
+            deleteFooter.setVisibility(blockedUi ? View.GONE : View.VISIBLE);
+        }
         final List<DrawerListRow> rows = blockedUi ? DrawerMenuRows.buildYellowRows() : DrawerMenuRows.buildRedRows();
         lvDrawerMenu.setAdapter(new DrawerMenuAdapter(this, rows, sharedPref, sharedEditor));
         lvDrawerMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
