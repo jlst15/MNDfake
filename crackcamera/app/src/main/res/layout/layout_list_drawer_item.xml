@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@+id/rlListView"
@@ -20,6 +20,7 @@
             android:layout_centerVertical="true" />
 
         <LinearLayout
+            android:id="@+id/llDrawerItemText"
             android:gravity="center|left"
             android:orientation="vertical"
             android:padding="10.0dip"
@@ -36,7 +37,8 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true" />
+                android:layout_centerVertical="true"
+                android:includeFontPadding="false" />
 
             <TextView
                 android:textSize="14.0sp"
@@ -46,8 +48,9 @@
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2.0dip"
-                android:layout_centerVertical="true" />
+                android:layout_marginTop="1.0dip"
+                android:layout_centerVertical="true"
+                android:includeFontPadding="false" />
         </LinearLayout>
 
         <Switch
@@ -57,7 +60,15 @@
             android:clickable="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5.0dip"
+            android:layout_marginLeft="4.0dip"
+            android:layout_marginTop="2.0dip"
+            android:layout_marginRight="8.0dip"
+            android:layout_marginBottom="2.0dip"
+            android:minWidth="0.0dip"
+            android:minHeight="0.0dip"
+            android:switchMinWidth="0.0dip"
+            android:textOn=""
+            android:textOff=""
             android:thumb="@android:color/transparent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"

@@ -2,6 +2,7 @@ package com.haruhi.lex.crackcamera;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -145,6 +146,15 @@ final class DrawerMenuAdapter extends BaseAdapter {
                 tvVal.setVisibility(View.GONE);
             }
         }
+        // Two-line switch rows run taller than the original; tighten text padding only here.
+        View textCol = itemView.findViewById(R.id.llDrawerItemText);
+        if (textCol != null) {
+            int padH = Math.round(TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 10f, context.getResources().getDisplayMetrics()));
+            int padV = Math.round(TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 5f, context.getResources().getDisplayMetrics()));
+            textCol.setPadding(padH, padV, padH, padV);
+        }
         View ivDetail = itemView.findViewById(R.id.ivDetail);
         if (ivDetail != null) {
             ivDetail.setVisibility(View.GONE);
@@ -154,6 +164,9 @@ final class DrawerMenuAdapter extends BaseAdapter {
             sw.setVisibility(View.VISIBLE);
             sw.setFocusable(false);
             sw.setClickable(true);
+            // Keep row height to the custom switch art; OEM themes often force 48dp minHeight.
+            sw.setMinimumWidth(0);
+            sw.setMinimumHeight(0);
             boolean on = sharedPref != null && sharedPref.getBoolean(row.prefKey, true);
             sw.setOnCheckedChangeListener(null);
             sw.setChecked(on);
