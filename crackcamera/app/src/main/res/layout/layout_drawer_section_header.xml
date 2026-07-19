@@ -4,7 +4,7 @@
     android:id="@+id/tvDrawerSectionTitle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="48.0dip"
+    android:minHeight="47.0dip"
     android:gravity="center_vertical"
     android:background="@color/common_mndmdm_background_border"
     android:paddingLeft="22.0dip"
