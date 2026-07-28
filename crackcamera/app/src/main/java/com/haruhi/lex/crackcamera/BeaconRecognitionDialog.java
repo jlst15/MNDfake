@@ -16,6 +16,8 @@ import static com.haruhi.lex.crackcamera.Notification.sendNotification;
  * Red-state beacon sheet: timed phase transition, then waits for an NFC tag before
  * {@link MainActivity#onSwitchCamera(View)} (→ yellow). Cancel dismisses without toggle.
  * On NFC unlock, posts {@code policy_camera_allow_noti_comment} as a notification.
+ * NFC is handled only while this sheet is open ({@link BeaconNfcUnlock}); the activity is
+ * not registered for system {@code TECH_DISCOVERED}, so idle tags do not relaunch it.
  * <p>
  * Window styling: {@link AlertDialogWindows#styleCenterWide(android.view.Window)}. Cancel clears
  * pending handler callbacks so timers do not fire after dismiss.

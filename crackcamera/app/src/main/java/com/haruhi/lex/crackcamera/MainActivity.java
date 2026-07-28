@@ -206,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         RecentsTaskIcon.apply(this);
+        BeaconNfcUnlock.onHostResumed();
         if (sNfcOffDialogShownThisProcess) {
             return;
         }
@@ -226,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        BeaconNfcUnlock.onHostPaused();
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         if (drawerLayout != null) {
             drawerLayout.closeDrawer(GravityCompat.START);
