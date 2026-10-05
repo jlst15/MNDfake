@@ -3,6 +3,8 @@ package com.haruhi.lex.crackcamera;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Log;
 
 import java.util.Calendar;
 import java.util.List;
@@ -64,7 +67,12 @@ public class MainActivity extends AppCompatActivity {
      * Delay NFC-off sheet until after first frame / init (see
      * {@link #maybeShowNfcOffBottomDialog}).
      */
+    private static final String TAG = "CameraPolicy";
     private static final long NFC_OFF_DIALOG_SHOW_DELAY_MS = 400L;
+    private static final int REQUEST_ENABLE_ADMIN = 1001;
+
+    private DevicePolicyManager devicePolicyManager;
+    private ComponentName adminComponent;
 
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -200,6 +208,14 @@ public class MainActivity extends AppCompatActivity {
         a1.start();
         mutex_user++;
         System.out.println("설정 끝 " + mutex_user);
+        devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+
+        adminComponent = new ComponentName(
+                this,
+                MyDeviceAdminReceiver.class
+        );
+
+        requestDeviceAdmin();
     }
 
     @Override
@@ -716,9 +732,11 @@ public class MainActivity extends AppCompatActivity {
             if (!suspended) {
                 AppEventLog.append(MainActivity.this, AppEventLog.KIND_BLOCK,
                         getString(R.string.mnfake_log_camera_block_manual));
+                setCameraBlocked(true);
             } else {
                 AppEventLog.append(MainActivity.this, AppEventLog.KIND_ALLOW,
                         getString(R.string.mnfake_log_camera_allow_beacon));
+                setCameraBlocked(false);
             }
         }
         updatePanel();
@@ -739,6 +757,83 @@ public class MainActivity extends AppCompatActivity {
             vibrator.vibrate(VibrationEffect.createOneShot(ms, VibrationEffect.DEFAULT_AMPLITUDE));
         } else {
             vibrator.vibrate(ms);
+        }
+    }
+    
+    private void showMessage(String message) {
+        Toast.makeText(
+                MainActivity.this,
+                message,
+                Toast.LENGTH_SHORT
+        ).show();
+    }
+    
+    private void requestDeviceAdmin() {
+        if (devicePolicyManager == null) {
+            showMessage("DevicePolicyManager is unavailable");
+            return;
+        }
+
+        if (devicePolicyManager.isAdminActive(adminComponent)) {
+            showMessage("Device administrator is already active");
+            return;
+        }
+
+        Intent intent = new Intent(
+                DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN
+        );
+
+        intent.putExtra(
+                DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+                adminComponent
+        );
+
+        intent.putExtra(
+                DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                "This administrator permission is required to control the camera."
+        );
+
+        startActivityForResult(intent, REQUEST_ENABLE_ADMIN);
+    }
+
+    private void setCameraBlocked(boolean blocked) {
+        if (devicePolicyManager == null) {
+            showMessage("DevicePolicyManager is unavailable");
+            return;
+        }
+
+        if (!devicePolicyManager.isAdminActive(adminComponent)) {
+            showMessage("Enable device administrator first");
+            requestDeviceAdmin();
+            return;
+        }
+
+        try {
+            devicePolicyManager.setCameraDisabled(
+                    adminComponent,
+                    blocked
+            );
+
+            if (blocked) {
+                showMessage("Camera disabled");
+            } else {
+                showMessage("Camera enabled");
+            }
+
+            Log.d(TAG, "Camera blocked: " + blocked);
+
+        } catch (SecurityException e) {
+            Log.e(TAG, "Camera policy is not permitted", e);
+
+            showMessage(
+                    "Camera policy is unavailable. Check device_admin.xml " +
+                    "and Android version."
+            );
+
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "Invalid admin component", e);
+
+            showMessage("Invalid device administrator component");
         }
     }
 }
