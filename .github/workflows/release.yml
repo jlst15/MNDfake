@@ -4,6 +4,9 @@ on:
   workflow_dispatch:   # manual run from Actions tab
   # push:
   #   tags: ['v*']
+  push:
+    branches:
+      - main
 
 jobs:
   build:
