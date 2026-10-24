@@ -4,6 +4,9 @@ on:
   workflow_dispatch:   # manual run from Actions tab
   # push:
   #   branches: [main]
+  push:
+    branches:
+      - test
 
 jobs:
   build:
